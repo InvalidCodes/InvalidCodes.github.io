@@ -4,6 +4,7 @@ Thumbs.db
 .env
 .env.*
 node_modules/
+plan.md
 
 # Local source photos; the website uses optimized WebP derivatives instead.
 IMG_8990.JPG

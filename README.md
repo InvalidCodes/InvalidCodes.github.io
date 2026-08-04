@@ -1,11 +1,11 @@
-# Yunfei Ge Personal Website
+# My Personal Website
 
 Static academic homepage built with HTML, CSS, and a small amount of JavaScript.
 
 ## Local Preview
 
 ```bash
-cd /Users/yunfei/Intern/personal_website
+cd personal_website
 python3 -m http.server 8000
 ```
 
