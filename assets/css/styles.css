@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap");
+
 :root {
   --bg: #f7f9fb;
   --surface: #ffffff;
@@ -9,7 +11,7 @@
   --warm: #6f579c;
   --news: #20895a;
   --alert: #b42318;
-  --klee: "Klee", "Klee One", "KaiTi", cursive;
+  --klee: "Klee One", "Klee", "KaiTi", sans-serif;
   --shadow: 0 18px 40px rgba(24, 40, 56, 0.08);
   --header-height: 72px;
 }
