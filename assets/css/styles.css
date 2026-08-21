@@ -9,7 +9,7 @@
   --warm: #6f579c;
   --news: #20895a;
   --alert: #b42318;
-  --chalkboard: "Chalkboard SE", "Comic Sans MS", "Comic Neue", cursive;
+  --klee: "Klee", "Klee One", "KaiTi", cursive;
   --shadow: 0 18px 40px rgba(24, 40, 56, 0.08);
   --header-height: 72px;
 }
@@ -224,7 +224,7 @@ button:focus-visible {
 }
 
 .profile-role {
-  font-family: var(--chalkboard);
+  font-family: var(--klee);
   font-weight: 720;
 }
 
@@ -234,7 +234,7 @@ button:focus-visible {
 }
 
 .profile-affiliation {
-  font-family: var(--chalkboard);
+  font-family: var(--klee);
 }
 
 .profile-tags {
@@ -389,7 +389,7 @@ li {
 }
 
 .news-list span {
-  font-family: var(--chalkboard);
+  font-family: var(--klee);
 }
 
 .interest-grid,
@@ -430,7 +430,7 @@ li {
 
 .work-item .authors {
   color: var(--muted);
-  font-family: var(--chalkboard);
+  font-family: var(--klee);
   font-weight: 400;
 }
 
@@ -567,8 +567,45 @@ li {
   border-radius: 8px;
 }
 
+.education-card-with-logo {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.organization-logo-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.organization-logo {
+  display: block;
+  width: 64px;
+  max-height: 68px;
+  object-fit: contain;
+}
+
+.organization-logo-tall {
+  width: 56px;
+}
+
+.organization-copy h3 a {
+  color: var(--accent-dark);
+  text-decoration-color: rgba(78, 42, 132, 0.28);
+}
+
+.organization-copy p:last-child {
+  margin-bottom: 0;
+}
+
 .education-card p:last-child {
   margin-bottom: 0;
+}
+
+.education-card .meta {
+  font-family: var(--klee);
 }
 
 .skill-list {
@@ -689,6 +726,20 @@ li {
 
   .education-year {
     padding-top: 0;
+  }
+
+  .education-card-with-logo {
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .organization-logo {
+    width: 52px;
+    max-height: 56px;
+  }
+
+  .organization-logo-tall {
+    width: 46px;
   }
 
   .news-list li {
