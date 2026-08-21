@@ -306,15 +306,6 @@ button:focus-visible {
   border-bottom: 0;
 }
 
-.eyebrow {
-  margin: 0 0 8px;
-  color: var(--warm);
-  font-size: 0.72rem;
-  font-weight: 760;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 h2 {
   margin: 0 0 18px;
   font-size: clamp(1.64rem, 2.3vw, 2.29rem);
@@ -342,7 +333,7 @@ li {
   margin: 5px 0;
 }
 
-.intro > p:not(.eyebrow) {
+.intro > p {
   max-width: 76ch;
   font-size: 0.98rem;
 }
@@ -458,9 +449,9 @@ li {
 }
 
 .publication-wide {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 1844 / 384;
   object-fit: contain;
-  padding: 8px;
+  padding: 0;
 }
 
 .text-link {
