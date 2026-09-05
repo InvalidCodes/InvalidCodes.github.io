@@ -425,7 +425,7 @@ li {
 
 .work-item {
   display: grid;
-  grid-template-columns: minmax(210px, 250px) minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
   gap: 22px;
   align-items: start;
 }
@@ -447,9 +447,9 @@ li {
 
 .publication-image {
   display: block;
-  width: 250px;
+  width: 200px;
   max-width: 100%;
-  height: 188px;
+  height: 110px;
   object-fit: contain;
   object-position: center;
   border: 1px solid var(--line);
@@ -459,7 +459,7 @@ li {
 
 .publication-logo {
   object-fit: contain;
-  padding: 16px;
+  padding: 8px;
 }
 
 .publication-wide {
