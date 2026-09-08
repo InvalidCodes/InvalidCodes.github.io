@@ -85,18 +85,32 @@
           <h2>Publications</h2>
           <div class="work-list">
             <article class="work-item">
-              <img class="publication-image publication-logo" src="assets/images/neurips-logo.webp" width="640" height="640" alt="Neural Information Processing Systems logo">
+              <div class="publication-visual">
+                <span class="publication-badge">NeurIPS 2026</span>
+                <img class="publication-image publication-logo" src="assets/images/neurips-logo.webp" width="640" height="640" alt="Neural Information Processing Systems logo">
+              </div>
               <div>
                 <h3>MindTopo: Can Foundation Models Reason in Topological Space?</h3>
                 <p class="meta authors"><span class="author-me">Yunfei Ge*</span>, Anbang Liu*, Qineng Wang*§, Johnalbert Garnica*, Jianwen Lyu, Zihan Wang, Reuben Tan, Jianfeng Gao, Ruohan Zhang, Yining Hong, Jiajun Wu, Manling Li · NeurIPS 2026 under review</p>
+                <details class="publication-details">
+                  <summary>Details</summary>
+                  <p>Spatial reasoning depends not only on metric properties such as distance, angle, and shape, but also on topological relations that remain invariant under continuous deformation. Cognitive science identifies these relations as foundational to spatial understanding, yet foundation-model evaluations largely focus on metric or viewpoint-dependent relations. We introduce <strong>MindTopo</strong>, a benchmark of <strong>topological intuition</strong> across five properties grounded in cognitive science and formal topology: continuity, separation, order, enclosure, and knots. MindTopo evaluates each property at two cognitive levels. <strong>Reasoning</strong> asks a model to identify topological relations or infer how they change. <strong>Planning</strong> instantiates a foundation model as a closed-loop agent whose policy selects environment actions. MindTopo contains 11,035 instances across 13 procedurally generated task types with controllable difficulty. We benchmark 13 MLLMs and study agent configurations augmented with image and video generation, including three video generative models in planning settings. Every MLLM performs better on reasoning than on planning, and the best-performing model remains far below observed human performance. On Qwen3-VL-2B-Instruct, supervised fine-tuning and reinforcement learning improve reasoning more than planning. Generated observations retain local cues and reach plausible endpoints, but audited rollouts do not reliably follow environment dynamics or preserve topology across transitions.</p>
+                </details>
               </div>
             </article>
             <article class="work-item">
-              <img class="publication-image publication-wide" src="assets/images/mmg2skill-overview.webp" width="1844" height="384" alt="MMG2Skill overview: guide-based skill extraction, revision, validation, and performance">
+              <div class="publication-visual">
+                <span class="publication-badge">EMNLP 2026</span>
+                <img class="publication-image publication-wide" src="assets/images/mmg2skill-overview.webp" width="1844" height="384" alt="MMG2Skill overview: guide-based skill extraction, revision, validation, and performance">
+              </div>
               <div>
                 <h3>MMG2Skill: Can Agents Distill In-the-Wild Guides into Self-Evolving Skills?</h3>
                 <p class="meta authors">Xinyu Che*, Junqi Xiong*, <span class="author-me">Yunfei Ge*</span>, Xinping Lei*, Shihao Li*, Hang Yan*, Han Li, Yuanxing Zhang, Zhiqi Bai, Jinhua Hao, Ming Sun, Han Li, Jiaheng Liu · Findings of EMNLP 2026</p>
                 <a class="text-link" href="https://arxiv.org/abs/2606.01993" target="_blank" rel="noopener noreferrer">Paper</a>
+                <details class="publication-details">
+                  <summary>Details</summary>
+                  <p>Abundant procedural knowledge on the Web holds great potential for helping agents solve long-horizon tasks. However, such knowledge is often multimodal, heterogeneous, noisy, and implicitly assumes human executors, making it difficult to use directly as the skills required by agents. To bridge the gap between human-oriented guides and agent-executable skills, we formalize this problem as guide-to-skill learning: converting in-the-wild guides into executable skills and continuously improving them from trajectories observable to the agent. To evaluate the capability of existing agents on this task, we introduce MMG2Skill-Bench, the first benchmark designed for this problem. We further propose MMG2Skill, a closed-loop framework that compiles guides into editable skills, conditions a fixed vision-language model (VLM) agent on these skills during execution, and revises the skills from trajectory-level root-cause feedback without using benchmark scores. Across GUI control, open-ended gameplay, and strategic card play with six VLM backbones, MMG2Skill consistently outperforms vanilla baseline agents in every model-domain setting, achieving macro-average gains of +12.8 to +25.3 percentage points across backbones. Ablation studies show that directly prompting agents with raw guides can degrade performance, while both structured skill construction and trajectory-driven revision are necessary for the observed improvements. On success-inferable tasks, analyzer-based early stopping further prevents late-stage performance regressions and saves 25%-53% of attempts when the success signal is properly calibrated.</p>
+                </details>
               </div>
             </article>
           </div>
