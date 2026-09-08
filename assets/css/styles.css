@@ -504,9 +504,28 @@ li {
   color: #8b929a;
   cursor: pointer;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.4;
   user-select: none;
+  list-style: none;
+}
+
+.publication-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.publication-details summary::before {
+  content: "";
+  display: inline-block;
+  margin-right: 5px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 4px solid currentColor;
+  vertical-align: 1px;
+}
+
+.publication-details[open] summary::before {
+  transform: rotate(90deg);
 }
 
 .publication-details summary:hover {
