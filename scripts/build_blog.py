@@ -31,13 +31,11 @@ ARCHIVES = {
         "label": "Blog", "url": "/blog/", "first_line": "Ideas in", "second_line": "progress.",
         "description": "Notes on research, engineering, and the things I learn along the way.",
         "intro": "Things I learned, things I've built, a few thoughts along the way.",
-        "reminder": ["Stay curious.", "Keep a record."],
     },
     "reading-notes": {
         "label": "Reading Notes", "url": "/blog/reading-notes/", "first_line": "Reading", "second_line": "notes.",
         "description": "A personal collection of reading notes and reflections on books.",
         "intro": "Books, ideas, and reflections from my reading journey.",
-        "reminder": ["Read slowly.", "Think freely."],
     },
 }
 # Function words and reference boilerplate kept out of the archive word clouds.

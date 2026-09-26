@@ -14,7 +14,7 @@ function random(seed) {
   };
 }
 
-// Silhouettes in a 440×230 design box: filled parts, cut-out holes, and where the biggest word starts.
+// Silhouettes in a 440×360 design box: filled parts, cut-out holes, and where the biggest word starts.
 const round = (x, y, w, h, r) => (px, py) => {
   const dx = Math.max(x + r - px, 0, px - (x + w - r)), dy = Math.max(y + r - py, 0, py - (y + h - r));
   return px >= x && px <= x + w && py >= y && py <= y + h && dx * dx + dy * dy <= r * r;
@@ -33,23 +33,23 @@ const polygon = (points) => (px, py) => {
   }
   return inside;
 };
-const page = [[220, 80], [186, 62], [140, 52], [92, 52], [40, 62], [40, 196], [92, 186], [140, 186], [186, 194], [220, 210]];
+const page = [[220, 64], [184, 36], [136, 22], [84, 22], [26, 40], [26, 292], [84, 274], [136, 274], [184, 288], [220, 314]];
 const SHAPES = {
-  // A robot arm reaching toward a small cup, as in the first article.
+  // A robot arm reaching down for a small cup, as in the first article.
   robot: {
-    fill: [round(36, 198, 132, 28, 9), round(70, 160, 60, 44, 10), oval(100, 150, 42, 42),
-      capsule(100, 150, 216, 58, 38), oval(216, 58, 34, 34), capsule(216, 58, 336, 114, 29),
-      oval(336, 114, 22, 22), capsule(336, 114, 362, 142, 17), capsule(362, 142, 406, 130, 9),
-      capsule(362, 142, 380, 186, 9)],
-    holes: [oval(100, 150, 11, 11), oval(216, 58, 10, 10), oval(336, 114, 7, 7)],
-    center: [158, 108],
-    marks: `<circle cx="100" cy="150" r="5"/><circle cx="216" cy="58" r="4.5"/><circle cx="336" cy="114" r="3.5"/><path class="cup" d="M392 176h32l-4 40h-24z M424 186c10 0 10 18 -2 18"/>`,
+    fill: [round(28, 312, 164, 34, 11), round(72, 258, 76, 62, 12), oval(110, 242, 50, 50),
+      capsule(110, 242, 226, 64, 50), oval(226, 64, 46, 46), capsule(226, 64, 354, 150, 39),
+      oval(354, 150, 27, 27), capsule(354, 150, 370, 204, 20), capsule(370, 204, 344, 258, 11),
+      capsule(370, 204, 404, 256, 11)],
+    holes: [oval(110, 242, 13, 13), oval(226, 64, 12, 12), oval(354, 150, 8, 8)],
+    center: [170, 156],
+    marks: `<circle cx="110" cy="242" r="6"/><circle cx="226" cy="64" r="5.5"/><circle cx="354" cy="150" r="4"/><path class="cup" d="M350 278h44l-5 58h-34z M394 290c15 0 15 28 -3 28"/>`,
   },
   book: {
-    fill: [polygon(page), polygon(page.map(([x, y]) => [440 - x, y])), round(292, 196, 14, 30, 2)],
-    holes: [round(218, 40, 4, 180, 2)],
-    center: [220, 136],
-    marks: `<path d="M220 82V206" class="spine"/>`,
+    fill: [polygon(page), polygon(page.map(([x, y]) => [440 - x, y])), round(290, 278, 16, 62, 2)],
+    holes: [round(218, 20, 4, 310, 2)],
+    center: [220, 170],
+    marks: `<path d="M220 68V310" class="spine"/>`,
   },
 };
 
@@ -66,7 +66,7 @@ async function drawCloud(host) {
   const font = (face, size) => `${face.italic ? "italic " : ""}${face.weight} ${size}px ${face.family}`;
   await Promise.all([faces.bold, faces.sans, faces.note].map((face) => document.fonts.load(font(face, 20)))).catch(() => {});
 
-  const W = 440, H = 230, CELL = 2, GW = W / CELL, GH = H / CELL;
+  const W = 440, H = 360, CELL = 2, GW = W / CELL, GH = H / CELL;
   const inside = (px, py) => shape.fill.some((part) => part(px, py)) && !shape.holes.some((hole) => hole(px, py));
   const mask = new Uint8Array(GW * GH);
   const used = new Uint8Array(GW * GH);
@@ -102,19 +102,19 @@ async function drawCloud(host) {
   };
 
   // Major words spiral outward from the center of the cloud, largest first.
-  const top = words[0][1], floor = words[Math.min(words.length, 32) - 1][1];
-  words.slice(0, 32).forEach(([text, count], rank) => {
+  const top = words[0][1], floor = words[Math.min(words.length, 36) - 1][1];
+  words.slice(0, 36).forEach(([text, count], rank) => {
     const face = rank < 3 ? faces.bold : [faces.serif, faces.sans, faces.note, faces.serif, faces.note][rank % 5];
-    let size = 9 + 26 * ((count - floor) / Math.max(1, top - floor)) ** 0.75;
+    let size = 10 + 34 * ((count - floor) / Math.max(1, top - floor)) ** 0.75;
     for (let attempt = 0; attempt < 4; attempt++, size *= 0.84) {
       const b = box(text, face, size);
       const w = Math.ceil(b.width / CELL), h = Math.ceil(b.height / CELL);
       const phase = rand() * Math.PI * 2;
       for (let t = 0, r = 0; r < GW; t += Math.max(0.02, 1.2 / (r + 1)), r = 0.55 * t) {
-        const x0 = Math.round(shape.center[0] / CELL + r * 1.6 * Math.cos(t + phase) - w / 2);
-        const y0 = Math.round(shape.center[1] / CELL + r * 1.1 * Math.sin(t + phase) - h / 2);
+        const x0 = Math.round(shape.center[0] / CELL + r * 1.25 * Math.cos(t + phase) - w / 2);
+        const y0 = Math.round(shape.center[1] / CELL + r * Math.sin(t + phase) - h / 2);
         if (!fits(x0, y0, w, h)) continue;
-        claim(x0, y0, w, h, 1);
+        claim(x0, y0, w, h, 3);
         place(text, face, size, x0, y0, b, "cloud-major", INK[rank % INK.length]);
         return;
       }
@@ -123,20 +123,22 @@ async function drawCloud(host) {
 
   // Tiny repeated words fill the silhouette like the grain of a cloud.
   const pool = words.slice(4);
-  for (let misses = 0, n = 0; misses < 260 && n < 900; n++) {
+  const cells = mask.reduce((list, on, i) => (on && !used[i] && list.push(i), list), []);
+  for (let misses = 0, n = 0; misses < 260 && n < 520; n++) {
     const [text] = pool[n % pool.length];
     const face = rand() < 0.6 ? faces.note : faces.sans;
-    const size = 4.2 + rand() * 3.4;
+    const size = 4.6 + rand() * 3.6;
     const b = box(text, face, size);
     const w = Math.ceil(b.width / CELL), h = Math.ceil(b.height / CELL);
     let spot = null;
-    for (let tries = 0; tries < 36 && !spot; tries++) {
-      const x0 = Math.floor(rand() * (GW - w)), y0 = Math.floor(rand() * (GH - h));
+    for (let tries = 0; tries < 60 && !spot; tries++) {
+      const cell = cells[Math.floor(rand() * cells.length)];
+      const x0 = cell % GW - (w >> 1), y0 = Math.floor(cell / GW) - (h >> 1);
       if (fits(x0, y0, w, h)) spot = [x0, y0];
     }
     if (!spot) { misses++; continue; }
     misses = 0;
-    claim(spot[0], spot[1], w, h, 0);
+    claim(spot[0], spot[1], w, h, 1);
     place(text, face, size, spot[0], spot[1], b, "cloud-dust", DUST[n % DUST.length]);
   }
 
@@ -266,7 +268,7 @@ if (!reduceMotion && matchMedia("(pointer: fine)").matches) {
   }, { passive: true });
   addEventListener("pointerover", (event) => {
     if (event.pointerType !== "mouse") return;
-    const target = event.target.closest?.("a, button, summary, .hero-note, .cloud-major");
+    const target = event.target.closest?.("a, button, summary, .cloud-major");
     if (target === hovered) return;
     hovered = target;
     if (!target) return;
