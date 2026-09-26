@@ -499,18 +499,26 @@ li {
   white-space: nowrap;
 }
 
+/* "Paper" floats left so the Details toggle sits beside it; the abstract clears below. */
+.work-item .text-link {
+  float: left;
+  margin-right: 14px;
+}
+
 .publication-details {
-  margin-top: 9px;
   color: var(--muted);
 }
 
 .publication-details summary {
+  /* A block summary would drop below the floated "Paper"; flow-root sits beside it. */
+  display: flow-root;
   width: fit-content;
   color: #8b929a;
   cursor: pointer;
+  font-family: var(--klee);
   font-size: 0.82rem;
-  font-weight: 400;
-  line-height: 1.4;
+  font-weight: 600;
+  line-height: 1.4rem;
   user-select: none;
   list-style: none;
 }
@@ -544,6 +552,7 @@ li {
 }
 
 .publication-details p {
+  clear: both;
   margin: 8px 0 0;
   padding: 10px 12px;
   color: #59626c;
