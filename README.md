@@ -97,6 +97,7 @@ index.html                 Academic homepage
 blog/                      Blog Markdown and article media
   reading-notes/           Separate reading-notes collection
 assets/                    Files served to visitors
+  css/typography.css       Shared heading (DM Sans), note (Klee), and prose (Times) fonts
   css/home.css             Academic homepage styling
   css/blog.css             Blog styling and homepage blog preview
   js/home.js               Homepage navigation
