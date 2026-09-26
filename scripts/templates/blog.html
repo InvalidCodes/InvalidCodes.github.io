@@ -12,24 +12,24 @@
     <link rel="canonical" href="{{ site_url }}{{ post.url if post else archive.url }}">
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="/assets/css/typography.css?v=20260926-h2">
-    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-stardust">
+    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-cards">
     <link rel="stylesheet" href="/assets/css/blog-code.css">
     <script defer src="/assets/js/blog.js?v=20260926-reading"></script>
-    <script defer src="/assets/js/blog-art.js?v=20260926"></script>
+    <script defer src="/assets/js/blog-art.js?v=20260926-shapes"></script>
     {% if post and post.has_math %}
     <link rel="stylesheet" href="/assets/vendor/katex/katex.min.css">
     <script defer src="/assets/vendor/katex/katex.min.js"></script>
     <script defer src="/assets/js/blog-math.js"></script>
     {% endif %}
   </head>
-  <body class="blog-site {{ 'post-page' if post else 'archive-page' }}">
+  <body id="top" class="blog-site {{ 'post-page' if post else 'archive-page' }}">
     <a class="blog-skip" href="#main">Skip to content</a>
-    <header class="blog-header" id="top">
+    {% if not post %}<header class="blog-header">
       <nav class="blog-nav" aria-label="Primary navigation">
         <a class="blog-brand" href="/">Yunfei Ge<span class="brand-dot" aria-hidden="true">.</span></a>
         <div class="blog-nav-links"><a href="/">Home</a><a href="/blog/"{% if archive_key == 'all' %} aria-current="{{ 'true' if post else 'page' }}"{% endif %}>Blog</a><a href="/blog/reading-notes/"{% if archive_key == 'reading-notes' %} aria-current="{{ 'true' if post else 'page' }}"{% endif %}>Reading Notes</a></div>
       </nav>
-    </header>
+    </header>{% endif %}
     <main id="main" class="blog-main">
       {% if post %}
       <div class="post-topline"><a class="back-link" href="{{ archive.url }}">← {{ archive.label }}</a><span class="blog-eyebrow">{{ 'READING NOTES' if archive_key == 'reading-notes' else 'THE NOTEBOOK' }} / {{ post.year }}</span></div>
@@ -60,7 +60,7 @@
       <section class="blog-hero" aria-labelledby="blog-title">
         <div class="hero-landscape" aria-hidden="true"><div class="landscape-orbit orbit-one"></div><div class="landscape-orbit orbit-two"></div><div class="landscape-orbit orbit-three"></div><div class="landscape-sun"></div><span class="hero-star" style="--x: 46%; --y: 13%; --d: 0s"></span><span class="hero-star" style="--x: 63%; --y: 86%; --d: 1.4s; --s: 7px"></span><span class="hero-star" style="--x: 77%; --y: 9%; --d: 2.6s; --s: 6px"></span><span class="hero-star" style="--x: 97%; --y: 34%; --d: .7s; --s: 8px"></span><span class="hero-star" style="--x: 57%; --y: 47%; --d: 3.3s; --s: 5px"></span></div>
         <div class="hero-copy"><h1 id="blog-title">{{ archive.first_line }} <em>{{ archive.second_line }}</em></h1><p class="hero-description">{{ archive.intro }}</p></div>
-        {% if cloud_words|length >= 12 %}<div class="hero-cloud" aria-hidden="true" data-words="{{ cloud_words|tojson|forceescape }}"></div>{% endif %}
+        {% if cloud_words|length >= 12 %}<div class="hero-cloud" aria-hidden="true" data-shape="{{ 'book' if archive_key == 'reading-notes' else 'robot' }}" data-words="{{ cloud_words|tojson|forceescape }}"></div>{% endif %}
         <div class="hero-note"><p>{{ archive.reminder[0] }}<br>{{ archive.reminder[1] }}</p></div>
       </section>
       <section id="writing" class="writing-section" aria-label="{{ archive.label }} entries, newest first">

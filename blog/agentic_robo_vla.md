@@ -1,7 +1,7 @@
 ---
 title: After the Robot Brain
 subtitle: Why Agentic Robotics Does Not Make VLA Obsolete, and Why Its Role Is Becoming Clearer
-date: 2026-09-26
+date: 2026-09-27
 description: Agentic robotics is not replacing vision language action models. It is clarifying their job as the physical intelligence layer that turns intent into reliable action.
 tags: [Robot Learning, Embodied AI]
 lang: en
