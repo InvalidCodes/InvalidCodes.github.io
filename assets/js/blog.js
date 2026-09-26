@@ -18,7 +18,11 @@ if (search) {
       entry.hidden = !matches;
       if (matches) count += 1;
     });
-    groups.forEach((group) => { group.hidden = !group.querySelector(".blog-entry:not([hidden])"); });
+    groups.forEach((group) => {
+      const visibleCount = group.querySelectorAll(".blog-entry:not([hidden])").length;
+      group.hidden = visibleCount === 0;
+      group.querySelector(".year-label > span").textContent = `${String(visibleCount).padStart(2, "0")} ${visibleCount === 1 ? "entry" : "entries"}`;
+    });
     filters.forEach((filter) => {
       const selected = filter.dataset.tag === activeTag;
       filter.classList.toggle("active", selected);

@@ -8,6 +8,10 @@ the website and publishes `_site/` to GitHub Pages through `.github/workflows/pa
 Put a `.md` file in `blog/` (subfolders are supported), then commit and push.
 The archive and homepage preview update automatically, **newest first**.
 
+Put book/film reflections in `blog/reading-notes/` to include them in the dedicated
+**Reading Notes** archive as well as the main Blog timeline. The six imported
+English translations are documented in [the import manifest](blog/reading-notes/README.md).
+
 Recommended format:
 
 ```markdown
@@ -39,6 +43,7 @@ The article starts here.
 - Date: `date` in front matter → date heading immediately after the title →
   `YYYY-MM-DD-` filename prefix → first Git addition date. Uncommitted files use
   their modification date in local previews. **Set `date` for precise ordering.**
+  Use `date: '2021-01'` when only the month is known; the page will not invent a day.
 - The first title and date headings are displayed in the article header, rather
   than repeated in the body. An explicit `description` replaces the auto excerpt.
 - `draft: true`, empty files, `README.md`, and files/folders beginning with `_` or
@@ -49,7 +54,9 @@ The article starts here.
   `![Description](images/demo.png)`. Images, SVG, PDFs, and video assets are copied.
 - Links to another `.md` note are converted to the published `.html` URL.
 - A file at `blog/my-note.md` becomes `/blog/my-note.html`. Keep its filename
-  stable to preserve links. `blog/index.md` is reserved for the archive.
+  stable to preserve links. `blog/index.md` and `blog/reading-notes/index.md` are
+  reserved for the archives.
+- Optional `source_url` adds a link to an imported reading note's Chinese original.
 - Markdown supports headings, tables, syntax-highlighted fenced code, blockquotes,
   footnotes, and an automatic heading outline. HTML is supported for trusted,
   author-written content.

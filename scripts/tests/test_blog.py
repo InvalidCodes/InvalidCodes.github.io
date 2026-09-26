@@ -49,6 +49,39 @@ class BlogBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "reserved"):
             read_post(self.write("index.md", "# A note"), self.root)
 
+    def test_month_precision_and_reading_notes_archive(self):
+        shutil.copytree(ROOT / "scripts/templates", self.root / "scripts/templates")
+        (self.root / "assets/css").mkdir(parents=True)
+        (self.root / "index.html").write_text("<!-- BLOG_PREVIEW_START --><!-- BLOG_PREVIEW_END -->")
+        self.write("ordinary.md", "---\ndate: 2025-01-01\n---\n# Ordinary post")
+        self.write("reading-notes/book.md", "---\ndate: '2021-01'\nsource_url: https://example.org/original\n---\n# Book reflection\n\nA thought.")
+        self.write("reading-notes/newer.md", "---\ndate: 2023-08-04\n---\n# Another book")
+        with redirect_stdout(StringIO()):
+            posts = build(self.root)
+        book = next(post for post in posts if post["title"] == "Book reflection")
+        self.assertEqual(book["date"], "2021-01")
+        self.assertEqual(book["display_date"], "Jan 2021")
+        self.assertEqual(book["short_date"], "JAN")
+        output = self.root / "_site/blog"
+        archive = (output / "reading-notes/index.html").read_text()
+        self.assertIn("Book reflection", archive)
+        self.assertIn("Another book", archive)
+        self.assertNotIn("Ordinary post", archive)
+        self.assertLess(archive.index("Another book"), archive.index("Book reflection"))
+        main = (output / "index.html").read_text()
+        self.assertIn("Ordinary post", main)
+        self.assertIn("Book reflection", main)
+        page = (output / "reading-notes/book.html").read_text()
+        self.assertIn('datetime="2021-01"', page)
+        self.assertNotIn('2021-01-01', page)
+        self.assertIn("Another book", page)
+        self.assertNotIn("Ordinary post", page)
+        self.assertIn('href="https://example.org/original"', page)
+        self.assertNotIn("Read the story", archive)
+        self.assertNotIn("COLLECTED ALONG THE WAY", archive)
+        self.assertNotIn("A small corner", archive)
+        self.assertIn('<footer class="blog-footer"><p>Always learning, always becoming.</p><a href="#top" class="back-top">', archive)
+
     def test_build_order_links_assets_and_markdown(self):
         shutil.copytree(ROOT / "scripts/templates", self.root / "scripts/templates")
         (self.root / "assets/css").mkdir(parents=True)

@@ -25,6 +25,22 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE_URL = "https://invalidcodes.github.io"
 MONTHS = ("", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 ASSET_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif", ".pdf", ".mp4", ".webm"}
+ARCHIVES = {
+    "all": {
+        "label": "Blog", "url": "/blog/", "first_line": "Ideas in", "second_line": "progress.",
+        "description": "Notes on research, engineering, and the things I learn along the way.",
+        "intro": ["Things I learn. Things I build.", "A few thoughts along the way."],
+        "reminder": ["Stay curious.", "Keep a record."],
+        "subjects": "RESEARCH / ENGINEERING / LIFE",
+    },
+    "reading-notes": {
+        "label": "Reading Notes", "url": "/blog/reading-notes/", "first_line": "Reading", "second_line": "notes.",
+        "description": "A personal collection of reading notes, book reflections, and thoughts on film.",
+        "intro": ["Books, films, and lingering thoughts.", "Notes from my own reading journey."],
+        "reminder": ["Read slowly.", "Think freely."],
+        "subjects": "BOOKS / FILMS / REFLECTIONS",
+    },
+}
 
 
 class PlainText(HTMLParser):
@@ -52,7 +68,7 @@ def parse_date(value):
         return date.fromisoformat(value)
     except ValueError:
         pass
-    for pattern in ("%b %d, %Y", "%B %d, %Y", "%Y/%m/%d"):
+    for pattern in ("%b %d, %Y", "%B %d, %Y", "%Y/%m/%d", "%Y-%m"):
         try:
             return datetime.strptime(value, pattern).date()
         except ValueError:
@@ -117,6 +133,7 @@ def read_post(path, root=ROOT):
     filename_date = re.match(r"^(\d{4}-\d{2}-\d{2})(?:-|$)", path.stem)
     published = (parse_date(metadata["date"]) if metadata.get("date") else
                  heading_date or (parse_date(filename_date[1]) if filename_date else fallback_date(path, root)))
+    month_only = bool(re.fullmatch(r"\d{4}-\d{2}", str(metadata.get("date", ""))))
 
     tags = metadata.get("tags") or ["Notes"]
     if isinstance(tags, str):
@@ -147,12 +164,14 @@ def read_post(path, root=ROOT):
     chinese_chars = len(re.findall(r"[\u3400-\u9fff]", text))
     words = len(re.findall(r"[A-Za-z0-9]+", text))
     relative_path = path.relative_to(root).with_suffix(".html")
-    if relative_path == Path("blog/index.html"):
-        raise ValueError("blog/index.md is reserved; use a different article filename")
+    if relative_path in (Path("blog/index.html"), Path("blog/reading-notes/index.html")):
+        raise ValueError(f"{path.name} is reserved for the archive; use a different article filename")
+    collection = "reading-notes" if path.relative_to(root / "blog").parts[0] == "reading-notes" else "all"
     return {
-        "title": title, "date": published.isoformat(), "year": published.year,
-        "display_date": f"{MONTHS[published.month]} {published.day}, {published.year}",
-        "short_date": f"{MONTHS[published.month].upper()} {published.day:02d}",
+        "title": title, "date": published.strftime("%Y-%m") if month_only else published.isoformat(), "year": published.year,
+        "display_date": f"{MONTHS[published.month]} {published.year}" if month_only else f"{MONTHS[published.month]} {published.day}, {published.year}",
+        "short_date": MONTHS[published.month].upper() if month_only else f"{MONTHS[published.month].upper()} {published.day:02d}",
+        "collection": collection, "source_url": str(metadata.get("source_url", "")),
         "url": "/" + quote(relative_path.as_posix(), safe="/"), "output_path": relative_path,
         "source_path": path.relative_to(root),
         "description": str(metadata.get("description") or excerpt(source)),
@@ -208,18 +227,26 @@ def build(root=ROOT):
 
     environment = Environment(loader=FileSystemLoader(root / "scripts/templates"), autoescape=select_autoescape())
     template = environment.get_template("blog.html")
-    context = {
-        "site_url": SITE_URL, "posts": posts, "post": None,
-        "years": [(year, list(entries)) for year, entries in groupby(posts, key=lambda post: post["year"])],
-        "tags": sorted({tag for post in posts for tag in post["tags"]}),
-    }
-    (output / "blog").mkdir(exist_ok=True)
-    (output / "blog/index.html").write_text(template.render(**context), encoding="utf-8")
-    for index, post in enumerate(posts):
+    archive_posts = {"all": posts, "reading-notes": [post for post in posts if post["collection"] == "reading-notes"]}
+    contexts = {}
+    for key, archive in ARCHIVES.items():
+        entries = archive_posts[key]
+        context = {
+            "site_url": SITE_URL, "posts": entries, "post": None, "archive": archive, "archive_key": key,
+            "years": [(year, list(items)) for year, items in groupby(entries, key=lambda post: post["year"])],
+            "tags": sorted({tag for post in entries for tag in post["tags"]}),
+        }
+        contexts[key] = context
+        destination = output / archive["url"].strip("/") / "index.html"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(template.render(**context), encoding="utf-8")
+    for post in posts:
+        peers = archive_posts[post["collection"]]
+        index = peers.index(post)
         destination = output / post["output_path"]
         destination.parent.mkdir(parents=True, exist_ok=True)
-        page_context = {**context, "post": post, "newer": posts[index - 1] if index else None,
-                        "older": posts[index + 1] if index + 1 < len(posts) else None}
+        page_context = {**contexts[post["collection"]], "post": post, "newer": peers[index - 1] if index else None,
+                        "older": peers[index + 1] if index + 1 < len(peers) else None}
         destination.write_text(template.render(**page_context), encoding="utf-8")
 
     homepage = (root / "index.html").read_text(encoding="utf-8")
