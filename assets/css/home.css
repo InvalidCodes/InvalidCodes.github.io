@@ -11,6 +11,9 @@
   --alert: #b42318;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --klee: var(--font-note);
+  /* Home headings use the more compact Aptos; Blog keeps DM Sans from typography.css.
+     Aptos is not licensed for web embedding, so visitors without it get the system sans. */
+  --font-heading: Aptos, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --shadow: none;
   --header-height: 60px;
 }
