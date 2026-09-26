@@ -12,9 +12,10 @@
     <link rel="canonical" href="{{ site_url }}{{ post.url if post else archive.url }}">
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="/assets/css/typography.css?v=20260926-h2">
-    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-hero">
+    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-stardust">
     <link rel="stylesheet" href="/assets/css/blog-code.css">
     <script defer src="/assets/js/blog.js?v=20260926-reading"></script>
+    <script defer src="/assets/js/blog-art.js?v=20260926"></script>
     {% if post and post.has_math %}
     <link rel="stylesheet" href="/assets/vendor/katex/katex.min.css">
     <script defer src="/assets/vendor/katex/katex.min.js"></script>
@@ -38,7 +39,7 @@
       {% if post.toc %}<details class="mobile-toc"><summary>Table of Contents</summary><nav class="post-toc" aria-label="Table of Contents">{{ post.toc|safe }}</nav></details>{% endif %}
       <header class="post-header">
         <div class="post-meta"><time datetime="{{ post.date }}">{{ post.display_date }}</time><span aria-hidden="true">/</span><span>{{ post.reading_minutes }} min read</span></div>
-        <h1>{{ post.title }}{{ '.' if post.title[-1:] not in '.!?。？！' else '' }}</h1>
+        <h1>{{ post.title }}{% if post.title[-1:] not in '.!?。？！' %}<span class="title-dot">.</span>{% endif %}</h1>
         {% if post.subtitle %}<p class="post-subtitle">{{ post.subtitle }}</p>{% endif %}
         <div class="post-byline"><img src="/assets/images/profile/profile-640.webp" alt="" width="36" height="36"><span>Yunfei Ge</span><span class="byline-rule" aria-hidden="true"></span>{% for tag in post.tags %}<a class="post-tag" href="{{ archive.url }}?tag={{ tag|urlencode }}#writing">{{ tag }}</a>{% endfor %}</div>
       </header>
@@ -57,8 +58,9 @@
       </div>
       {% else %}
       <section class="blog-hero" aria-labelledby="blog-title">
-        <div class="hero-landscape" aria-hidden="true"><div class="landscape-orbit orbit-one"></div><div class="landscape-orbit orbit-two"></div><div class="landscape-orbit orbit-three"></div><div class="landscape-sun"></div></div>
+        <div class="hero-landscape" aria-hidden="true"><div class="landscape-orbit orbit-one"></div><div class="landscape-orbit orbit-two"></div><div class="landscape-orbit orbit-three"></div><div class="landscape-sun"></div><span class="hero-star" style="--x: 46%; --y: 13%; --d: 0s"></span><span class="hero-star" style="--x: 63%; --y: 86%; --d: 1.4s; --s: 7px"></span><span class="hero-star" style="--x: 77%; --y: 9%; --d: 2.6s; --s: 6px"></span><span class="hero-star" style="--x: 97%; --y: 34%; --d: .7s; --s: 8px"></span><span class="hero-star" style="--x: 57%; --y: 47%; --d: 3.3s; --s: 5px"></span></div>
         <div class="hero-copy"><h1 id="blog-title">{{ archive.first_line }} <em>{{ archive.second_line }}</em></h1><p class="hero-description">{{ archive.intro }}</p></div>
+        {% if cloud_words|length >= 12 %}<div class="hero-cloud" aria-hidden="true" data-words="{{ cloud_words|tojson|forceescape }}"></div>{% endif %}
         <div class="hero-note"><p>{{ archive.reminder[0] }}<br>{{ archive.reminder[1] }}</p></div>
       </section>
       <section id="writing" class="writing-section" aria-label="{{ archive.label }} entries, newest first">
@@ -66,7 +68,7 @@
         <div class="archive-tools" hidden><div class="tag-filters" role="group" aria-label="Filter by topic"><button class="tag-filter active" type="button" data-tag="" aria-pressed="true">{{ 'All posts' if archive_key == 'all' else 'All notes' }}</button>{% for tag in tags %}<button class="tag-filter" type="button" data-tag="{{ tag }}" aria-pressed="false">{{ tag }}</button>{% endfor %}</div><label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg><span class="sr-only">Search writing</span><input id="blog-search" type="search" placeholder="{{ 'Find a post…' if archive_key == 'all' else 'Find a note…' }}" autocomplete="off"></label></div>
         <div class="writing-list">
           {% for year, entries in years %}<section class="year-group" aria-labelledby="year-{{ year }}"><h3 class="year-label" id="year-{{ year }}">{{ year }}<span>{{ '%02d'|format(entries|length) }} {{ 'entry' if entries|length == 1 else 'entries' }}</span></h3><div class="year-entries">
-            {% for entry in entries %}<article class="blog-entry" data-tags="{{ entry.tags|tojson|forceescape }}" data-search="{{ (entry.title ~ ' ' ~ entry.description ~ ' ' ~ entry.tags|join(' '))|lower }}"><div class="entry-topline"><time datetime="{{ entry.date }}">{{ entry.short_date }}</time><span class="entry-reading">{{ entry.reading_minutes }} min read</span></div><h3><a href="{{ entry.url }}">{{ entry.title }}<span class="entry-arrow" aria-hidden="true">↗</span></a></h3><p class="entry-excerpt">{{ entry.description }}</p><div class="entry-tags">{% for tag in entry.tags %}<span>{{ tag }}</span>{% endfor %}</div></article>{% endfor %}
+            {% for entry in entries %}<article class="blog-entry" data-tags="{{ entry.tags|tojson|forceescape }}" data-search="{{ (entry.title ~ ' ' ~ entry.description ~ ' ' ~ entry.tags|join(' '))|lower }}"><div class="entry-topline"><time datetime="{{ entry.date }}">{{ entry.short_date }}</time><span class="entry-reading">{{ entry.reading_minutes }} min read</span></div><h3><a href="{{ entry.url }}"><span class="entry-title"><span>{{ entry.title }}</span></span><span class="entry-arrow" aria-hidden="true">↗</span></a></h3><p class="entry-excerpt">{{ entry.description }}</p><div class="entry-tags">{% for tag in entry.tags %}<span>{{ tag }}</span>{% endfor %}</div></article>{% endfor %}
           </div></section>{% endfor %}
         </div>
         <p class="search-status sr-only" role="status" aria-live="polite"></p><div class="no-results" hidden><span aria-hidden="true">✳</span><h3>No notes found.</h3><p>Try another word or topic.</p><button type="button" id="clear-search">Show all writing</button></div>

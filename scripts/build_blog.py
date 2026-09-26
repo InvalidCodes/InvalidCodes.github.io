@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 from datetime import date, datetime
 from html import escape
 from html.parser import HTMLParser
@@ -39,6 +40,25 @@ ARCHIVES = {
         "reminder": ["Read slowly.", "Think freely."],
     },
 }
+# Function words and reference boilerplate kept out of the archive word clouds.
+CLOUD_STOPWORDS = frozenset("""
+a about above across after again against all almost along already also although always am among an and another any
+are around as at be because become becomes been before being below between both but by can cannot could did do does
+doing done down during each either else enough etc even ever every few for from further get gets given go goes had
+has have having he her here hers herself him himself his how however i if in instead into is it its itself just
+least less let like made make makes many may me might more most much must my myself neither never next no nor not
+now of off often on once one only onto or other others our ours ourselves out over own per perhaps quite rather
+really same several shall she should simply since so some something sometimes still such than that the their theirs
+them themselves then there therefore these they thing things this those though three through throughout thus to too
+toward towards two under unless until up upon us use used uses using very via was way ways we well were what when
+where whether which while who whom whose why will with within without would yet you your yours yourself
+first second third new another actually directly usually certainly merely especially particularly probably
+say says said see seen seems seem tell come comes take takes know known call called mean means keep keeps ask asks
+able across along also later part kind sort lot example fact case point paper papers article section
+different need needs useful matter matters imagine describe right important complete end sense form answer question
+chapter step steps early
+http https www com org arxiv abs html github published submitted supports version versions
+""".split())
 
 
 class PlainText(HTMLParser):
@@ -96,6 +116,35 @@ def excerpt(body):
         if text:
             return text if len(text) <= 220 else text[:217].rstrip() + "…"
     return ""
+
+
+def word_frequencies(posts, limit=80):
+    """Most frequent content words across an archive, as [display form, count] pairs."""
+    counts, forms = Counter(), {}
+    for post in posts:
+        html = re.sub(r'(?s)<pre\b.*?</pre>|<(span|div) class="arithmatex">.*?</\1>|<div class="footnote">.*', " ", post["html"])
+        text = (post["title"] + " " + plain_text(html)).replace("\u2019", "'")
+        for token in re.findall(r"[A-Za-z]+(?:'[A-Za-z]+)*", text):
+            token = re.sub(r"'s$", "", token)
+            key = token.lower()
+            if len(key) < 3 or "'" in key or key in CLOUD_STOPWORDS:
+                continue
+            counts[key] += 1
+            forms.setdefault(key, Counter())[token] += 1
+    for key in sorted(counts, key=len, reverse=True):  # Fold plurals into an attested singular.
+        singular = key[:-3] + "y" if key.endswith("ies") else key[:-1] if key.endswith("s") and not key.endswith("ss") else None
+        if singular in counts:
+            counts[singular] += counts.pop(key)
+            forms[singular].update(forms.pop(key))
+    ranked = [(key, count) for key, count in counts.most_common() if count > 1][:limit]
+
+    def display(key):
+        """Prefer the lowercase singular spelling; acronyms and names keep their own case."""
+        if forms[key][key]:
+            return key
+        return max(forms[key], key=lambda form: (form.lower() == key, forms[key][form]))
+
+    return [[display(key), count] for key, count in ranked]
 
 
 def read_post(path, root=ROOT):
@@ -242,6 +291,7 @@ def build(root=ROOT):
             "site_url": SITE_URL, "posts": entries, "post": None, "archive": archive, "archive_key": key,
             "years": [(year, list(items)) for year, items in groupby(entries, key=lambda post: post["year"])],
             "tags": sorted({tag for post in entries for tag in post["tags"]}),
+            "cloud_words": word_frequencies(entries),
         }
         contexts[key] = context
         destination = output / archive["url"].strip("/") / "index.html"

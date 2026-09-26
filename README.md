@@ -102,6 +102,7 @@ assets/                    Files served to visitors
   css/blog.css             Blog styling and homepage blog preview
   js/home.js               Homepage navigation
   js/blog.js               Blog search, filtering, and code copying
+  js/blog-art.js           Hero word cloud, opening initial, and cursor stardust
   js/blog-math.js          Article math rendering
   images/profile/          Optimized portraits
   images/publications/     Optimized paper figures

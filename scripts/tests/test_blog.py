@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from build_blog import ROOT, build, read_post
+from build_blog import ROOT, build, read_post, word_frequencies
 
 
 class BlogBuildTests(unittest.TestCase):
@@ -40,6 +40,15 @@ class BlogBuildTests(unittest.TestCase):
         self.assertEqual(post["lang"], "zh-CN")
         self.assertEqual(post["tags"], ["Robotics", "随笔"])
         self.assertIn("方法", post["toc"])
+
+    def test_word_cloud_frequencies(self):
+        post = read_post(self.write("cloud.md", "# Robot policies\n\nThe robot's policy uses a DCT. Robots learn policies, and the DCT helps each robot.\n\n```python\nignored_code = robot\n```\n\nSee [^a].\n\n[^a]: arXiv robot reference."), self.root)
+        words = dict(word_frequencies([post]))
+        self.assertEqual(words["robot"], 4)
+        self.assertEqual(words["policy"], 3)
+        self.assertEqual(words["DCT"], 2)
+        self.assertNotIn("the", words)
+        self.assertNotIn("ignored_code", words)
 
     def test_drafts_empty_and_bad_dates(self):
         self.assertIsNone(read_post(self.write("draft.md", "---\ndraft: true\n---\n# Private draft"), self.root))
