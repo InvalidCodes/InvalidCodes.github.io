@@ -211,7 +211,10 @@ def build(root=ROOT):
     if output.exists():
         shutil.rmtree(output)
     output.mkdir()
-    shutil.copytree(root / "assets", output / "assets")
+    shutil.copytree(
+        root / "assets", output / "assets",
+        ignore=shutil.ignore_patterns(".DS_Store", "Thumbs.db", "__pycache__", "*.pyc", "README.md"),
+    )
     posts = []
     for path in sorted((root / "blog").rglob("*")):
         relative = path.relative_to(root / "blog")

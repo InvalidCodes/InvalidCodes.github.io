@@ -35,7 +35,7 @@
         <div class="post-meta"><time datetime="{{ post.date }}">{{ post.display_date }}</time><span aria-hidden="true">/</span><span>{{ post.reading_minutes }} min read</span></div>
         <h1>{{ post.title }}</h1>
         {% if post.subtitle %}<p class="post-subtitle">{{ post.subtitle }}</p>{% endif %}
-        <div class="post-byline"><img src="/assets/images/profile-640.webp" alt="" width="36" height="36"><span>Yunfei Ge</span><span class="byline-rule" aria-hidden="true"></span>{% for tag in post.tags %}<a class="post-tag" href="{{ archive.url }}?tag={{ tag|urlencode }}#writing">{{ tag }}</a>{% endfor %}</div>
+        <div class="post-byline"><img src="/assets/images/profile/profile-640.webp" alt="" width="36" height="36"><span>Yunfei Ge</span><span class="byline-rule" aria-hidden="true"></span>{% for tag in post.tags %}<a class="post-tag" href="{{ archive.url }}?tag={{ tag|urlencode }}#writing">{{ tag }}</a>{% endfor %}</div>
       </header>
       <div class="post-layout {{ 'without-toc' if not post.toc }}">
         <article class="prose">{{ post.html|safe }}

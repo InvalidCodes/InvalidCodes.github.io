@@ -7,8 +7,5 @@ node_modules/
 .venv/
 _site/
 __pycache__/
-plan.md
-
-# Local source photos; the website uses optimized WebP derivatives instead.
-IMG_8990.JPG
-img.jpg
+# Local source photos/crops; only optimized public derivatives are tracked.
+/source-assets/photos/

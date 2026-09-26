@@ -92,14 +92,39 @@ run the build again and refresh the browser. Generated files stay out of Git.
 
 ## Structure
 
-- `index.html`: academic homepage and blog preview slot.
-- `blog/`: Markdown articles and their media.
-- `assets/css/styles.css`: academic homepage styling.
-- `assets/css/blog.css`: notebook and article styling, plus homepage preview.
-- `assets/js/`: homepage navigation and notebook search/filter/copy-code behavior.
-- `scripts/build_blog.py`: Markdown metadata, sorting, rendering, and static build.
-- `scripts/templates/blog.html`: archive and article template.
-- `_site/`: generated publication output; do not edit directly.
+```text
+index.html                 Academic homepage
+blog/                      Blog Markdown and article media
+  reading-notes/           Separate reading-notes collection
+assets/                    Files served to visitors
+  css/home.css             Academic homepage styling
+  css/blog.css             Blog styling and homepage blog preview
+  js/home.js               Homepage navigation
+  js/blog.js               Blog search, filtering, and code copying
+  js/blog-math.js          Article math rendering
+  images/profile/          Optimized portraits
+  images/publications/     Optimized paper figures
+  images/logos/            Institution and conference logos
+  images/favicon.png       Browser icon
+  vendor/katex/            Math library, fonts, and license
+scripts/
+  build_blog.py            Static website build
+  templates/blog.html      Archive and article template
+  tests/test_blog.py       Build regression checks
+source-assets/             Original figures and local photo crops; never deployed
+docs/archive/              Historical documentation; not current instructions
+requirements-blog.txt      Pinned build dependencies
+.github/workflows/         GitHub Pages build and deployment
+```
+
+Local working directories are intentionally ignored by Git: `.venv/` is the
+Python build environment; `_site/` is regenerated on every build. Neither is
+hand-authored website content. Python caches and OS metadata can be removed
+without losing source files.
+
+KaTeX's font files are referenced by its bundled CSS, including fallback formats;
+keep the vendor distribution and license together. Original figure PDFs live in
+`source-assets/figures/` instead of the public image directory.
 
 GitHub Pages uses **GitHub Actions** as its publishing source. The build uses the
 [official Pages artifact/deployment workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
