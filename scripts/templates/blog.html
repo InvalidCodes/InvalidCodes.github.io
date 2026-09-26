@@ -11,7 +11,7 @@
     {% if post and post.date|length == 10 %}<meta property="article:published_time" content="{{ post.date }}">{% endif %}
     <link rel="canonical" href="{{ site_url }}{{ post.url if post else archive.url }}">
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-prose">
+    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-left-toc">
     <link rel="stylesheet" href="/assets/css/blog-code.css">
     <script defer src="/assets/js/blog.js?v=20260926-reading"></script>
     {% if post and post.has_math %}
@@ -31,24 +31,29 @@
     <main id="main" class="blog-main">
       {% if post %}
       <div class="post-topline"><a class="back-link" href="{{ archive.url }}">← {{ archive.label }}</a><span class="blog-eyebrow">{{ 'READING NOTES' if archive_key == 'reading-notes' else 'THE NOTEBOOK' }} / {{ post.year }}</span></div>
+      <div class="post-shell {{ 'without-toc' if not post.toc }}">
+      {% if post.toc %}<aside class="post-sidebar"><nav class="post-toc" aria-label="Table of Contents"><p class="blog-eyebrow">TABLE OF CONTENTS</p>{{ post.toc|safe }}</nav></aside>{% endif %}
+      <div class="post-content">
+      {% if post.toc %}<details class="mobile-toc"><summary>Table of Contents</summary><nav class="post-toc" aria-label="Table of Contents">{{ post.toc|safe }}</nav></details>{% endif %}
       <header class="post-header">
         <div class="post-meta"><time datetime="{{ post.date }}">{{ post.display_date }}</time><span aria-hidden="true">/</span><span>{{ post.reading_minutes }} min read</span></div>
         <h1>{{ post.title }}</h1>
         {% if post.subtitle %}<p class="post-subtitle">{{ post.subtitle }}</p>{% endif %}
         <div class="post-byline"><img src="/assets/images/profile/profile-640.webp" alt="" width="36" height="36"><span>Yunfei Ge</span><span class="byline-rule" aria-hidden="true"></span>{% for tag in post.tags %}<a class="post-tag" href="{{ archive.url }}?tag={{ tag|urlencode }}#writing">{{ tag }}</a>{% endfor %}</div>
       </header>
-      <div class="post-layout {{ 'without-toc' if not post.toc }}">
+      <div class="post-layout">
         <article class="prose">{{ post.html|safe }}
           {% if post.source_url %}<p class="post-source"><a href="{{ post.source_url }}">Original Chinese note <span aria-hidden="true">↗</span></a></p>{% endif %}
           <div class="end-mark" aria-label="End of article">✳</div>
         </article>
-        {% if post.toc %}<aside class="post-sidebar"><nav class="post-toc" aria-label="On this page"><p class="blog-eyebrow">ON THIS PAGE</p>{{ post.toc|safe }}</nav></aside>{% endif %}
       </div>
       <nav class="post-pagination" aria-label="More writing">
         {% if newer %}<a href="{{ newer.url }}"><span>← Newer entry</span><strong>{{ newer.title }}</strong></a>{% endif %}
         {% if older %}<a href="{{ older.url }}"><span>Older entry →</span><strong>{{ older.title }}</strong></a>{% endif %}
         {% if not newer and not older %}<a href="{{ archive.url }}"><span>Back to {{ archive.label }}</span><strong>Every idea starts somewhere. <span aria-hidden="true">↗</span></strong></a>{% endif %}
       </nav>
+      </div>
+      </div>
       {% else %}
       <section class="blog-hero" aria-labelledby="blog-title">
         <div class="hero-landscape" aria-hidden="true"><div class="landscape-orbit orbit-one"></div><div class="landscape-orbit orbit-two"></div><div class="landscape-orbit orbit-three"></div><div class="landscape-sun"></div></div>
