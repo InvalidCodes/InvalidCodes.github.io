@@ -112,11 +112,11 @@
 .byline-rule { height: 16px; width: 1px; background: #dfd4e6; margin: 0 6px; }
 .post-tag { padding: 3px 9px; background: #efeaf3; border-radius: 4px; font-size: 10px; color: #8a7398 !important; }
 .post-layout { border-top: 1px solid var(--line); padding: 32px 0 0; }
-.prose { min-width: 0; font-family: var(--font-prose); font-size: 18px; line-height: 1.8; color: #544b5c; overflow-wrap: break-word; }
+.prose { min-width: 0; font-family: var(--font-prose); font-size: 18px; line-height: 1; color: #544b5c; overflow-wrap: break-word; }
 .without-toc .prose { max-width: 720px; margin: 0 auto; }
 .prose > :first-child { margin-top: 0; }
-.prose p { margin: 0 0 1.5em; }
-.prose h1, .prose h2, .prose h3, .prose h4 { color: #3e304a; font-family: var(--sans); line-height: 1.4; scroll-margin-top: 30px; }
+.prose p { margin: 0 0 1.25em; }
+.prose h1, .prose h2, .prose h3, .prose h4 { color: #3e304a; font-family: var(--sans); line-height: 1.25; scroll-margin-top: 30px; }
 .prose h1, .prose h2 { font-size: 28px; font-weight: 550; letter-spacing: -.4px; margin: 2em 0 .8em; }
 .prose h3 { font-size: 21px; font-weight: 550; margin: 1.8em 0 .7em; }
 .prose h4 { font-size: 17px; margin: 1.5em 0 .5em; }
@@ -125,13 +125,13 @@
 .prose img, .prose video { display: block; max-width: 100%; height: auto; margin: 30px auto; border-radius: 8px; }
 .prose blockquote { margin: 30px 0; padding: 17px 25px; border-left: 2px solid #b399c6; background: #f0eaf44d; color: #826b91; }
 .prose blockquote p:last-child { margin-bottom: 0; }
-.prose ul, .prose ol { padding-left: 1.5em; margin-bottom: 1.5em; }
+.prose ul, .prose ol { padding-left: 1.5em; margin-bottom: 1.25em; }
 .prose li { padding-left: .2em; margin: .4em 0; }
 .prose li > p { margin: .5em 0; }
 .prose li::marker { color: #a88ab9; }
 .prose hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
 .prose code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .84em; background: #eee7f2; padding: .15em .35em; border-radius: 3px; }
-.prose pre { max-width: 100%; overflow-x: auto; padding: 24px; border: 1px solid #e5dce9; background: #f2eef5; border-radius: 8px; font-size: 13px; line-height: 1.75; tab-size: 4; }
+.prose pre { max-width: 100%; overflow-x: auto; padding: 24px; border: 1px solid #e5dce9; background: #f2eef5; border-radius: 8px; font-size: 13px; line-height: 1.25; tab-size: 4; }
 .prose pre code { padding: 0; background: none; border-radius: 0; font-size: inherit; }
 .code-block { position: relative; }
 .code-block pre { padding-top: 40px; }
@@ -217,7 +217,7 @@
   .post-header h1 { font-size: 34px; letter-spacing: -.6px; }
   .post-subtitle { font-size: 14px; margin-top: -9px; }
   .post-layout { padding-top: 30px; }
-  .prose { font-size: 17px; line-height: 1.8; margin: 0 5px; }
+  .prose { font-size: 17px; margin: 0 5px; }
   .prose h2 { font-size: 24px; }
   .prose h3 { font-size: 20px; }
   .prose pre { padding-left: 17px; padding-right: 17px; font-size: 12px; }
