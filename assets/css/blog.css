@@ -38,7 +38,7 @@
 .blog-skip { position: fixed; top: -100px; left: 20px; padding: 12px 20px; background: white; z-index: 20; }
 .blog-skip:focus { top: 12px; }
 .blog-header { height: 88px; }
-.blog-nav { width: min(1120px, calc(100% - 80px)); height: 100%; margin: auto; display: flex; justify-content: space-between; align-items: center; }
+.blog-nav { width: min(1380px, calc(100% - 28px)); height: 100%; margin: auto; display: flex; justify-content: space-between; align-items: center; }
 .blog-brand { font-family: var(--sans); font-size: 20px; font-weight: 650; letter-spacing: -.8px; }
 .brand-dot { color: #9675b0; font-size: 30px; }
 .blog-nav-links { display: flex; align-items: center; gap: 35px; font-size: 13px; }
@@ -46,8 +46,9 @@
 .blog-nav-links a[aria-current] { color: var(--ink); }
 .blog-nav-links a[aria-current]::after { content: ""; position: absolute; width: 4px; height: 4px; bottom: -2px; left: calc(50% - 2px); border-radius: 50%; background: #88689f; }
 .blog-nav-links a:hover { color: var(--violet); }
-.blog-main { width: min(1120px, calc(100% - 80px)); margin: 0 auto; }
-.blog-hero { display: flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 208px; padding: 32px 48px; position: relative; isolation: isolate; overflow: hidden; border-radius: 16px; border: 1px solid #e3dce8; background: #eee8f1; }
+/* Same page width as the homepage. */
+.blog-main { width: min(1380px, calc(100% - 28px)); margin: 0 auto; }
+.blog-hero { display: flex; align-items: center; justify-content: space-between; gap: 36px; min-height: 300px; padding: 40px 56px; position: relative; isolation: isolate; overflow: hidden; border-radius: 16px; border: 1px solid #e3dce8; background: #eee8f1; }
 .hero-landscape { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: radial-gradient(ellipse at 81% 24%, #fff7e7 0%, #fff7e700 36%), radial-gradient(ellipse at 75% 95%, #b8a6d3a6 0%, #c9b8d900 56%), linear-gradient(115deg, #f0ecf5 25%, #e5dceb 58%, #eee5e5 100%); }
 .hero-landscape::before, .hero-landscape::after { content: ""; position: absolute; width: 1000px; height: 420px; border-radius: 50%; transform: rotate(-22deg); }
 .hero-landscape::before { left: 30%; top: 67%; background: linear-gradient(170deg, #bba8cd22, #ad98c682); box-shadow: 0 -1px #ffffff50, 0 -35px 0 0 #f9f6fb14, 0 -36px #ffffff40, 0 -76px 0 0 #e3d8ed10, 0 -77px #ffffff45; }
@@ -70,14 +71,15 @@
 .hero-cloud .cloud-backing { opacity: .5; filter: blur(1.5px); pointer-events: none; }
 .hero-cloud .cloud-marks { fill: #6a4a88; stroke: none; pointer-events: none; }
 .hero-cloud .cloud-marks .glint { fill: #fffaf2; }
+.hero-cloud .cloud-marks .cup { fill: none; stroke: #9a6f9f; stroke-width: 1.6; stroke-linejoin: round; }
 .hero-cloud .cloud-marks .spine { fill: none; stroke: #b59ac8; stroke-width: 1.5; stroke-dasharray: 2 4; }
 .hero-cloud svg:has(.cloud-major:hover) text:not(:hover) { opacity: .32; }
 .hero-cloud .cloud-major:hover { fill: #3b2352 !important; }
 .hero-description { font-size: 14px; line-height: 1.8; color: var(--muted); margin-bottom: 0; white-space: nowrap; }
 .hero-note { position: relative; flex: 0 0 176px; z-index: 1; padding: 17px 18px; background: linear-gradient(125deg, #ffffff90, #ffffff30); border: 1px solid #fff9; border-radius: 8px; box-shadow: 0 18px 60px #74608212; backdrop-filter: blur(13px); transform: rotate(6deg); }
 .hero-note p { font-family: var(--klee); font-size: 18px; font-weight: 400; line-height: 1.4; margin: 0; color: #695575; }
-.writing-section { padding: 42px 32px 45px; scroll-margin-top: 24px; }
-.archive-tools { display: flex; gap: 18px; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 7px 18px 7px 7px; border: 1px solid #ebe3f0; border-radius: 999px; background: #ffffff8c; box-shadow: 0 10px 30px -22px #4a326440; }
+.writing-section { padding: 42px 0 45px; scroll-margin-top: 24px; }
+.archive-tools { display: flex; gap: 18px; justify-content: space-between; align-items: center; margin-bottom: 26px; padding: 7px 18px 7px 7px; border: 1px solid #ebe3f0; border-radius: 999px; background: #ffffff8c; box-shadow: 0 10px 30px -22px #4a326440; }
 .tag-filters { display: flex; flex-wrap: wrap; gap: 8px; }
 .tag-filter { border: 1px solid transparent; background: none; border-radius: 6px; padding: 7px 13px; color: var(--muted); font-size: 12px !important; }
 .tag-filter:hover { color: #624879; background: #f1edf4; }
@@ -114,13 +116,12 @@
 .no-results h3 { font: 500 28px var(--sans); margin: 12px 0; }
 .no-results p { font-size: 13px; }
 .no-results button { border: 0; border-bottom: 1px solid #b8a6c5; background: transparent; color: var(--violet); padding: 5px; font-size: 12px; }
-.blog-footer { max-width: 1056px; width: calc(100% - 144px); margin: 0 auto; padding: 27px 0 31px; background: linear-gradient(90deg, transparent, #d8c6e4 20%, #ecd9c8 80%, transparent) top / 100% 1px no-repeat; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.blog-footer { width: min(1380px, calc(100% - 28px)); margin: 0 auto; padding: 27px 0 31px; background: linear-gradient(90deg, transparent, #d8c6e4 20%, #ecd9c8 80%, transparent) top / 100% 1px no-repeat; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
 .blog-footer p { color: var(--subtle); font: 600 14px var(--klee); margin: 0; }
 .blog-footer p::before { content: "\2726"; margin-right: 10px; color: var(--violet-soft); }
 .back-top { color: var(--subtle) !important; font-size: 11px; white-space: nowrap; }
 
 /* Article typography, intentionally spacious enough for technical writing. */
-.post-page .blog-main, .post-page .blog-footer { width: min(1380px, calc(100% - 28px)); max-width: none; }
 .post-shell { display: grid; grid-template-columns: minmax(250px, 280px) minmax(0, 1fr); gap: 52px; align-items: start; padding-top: 40px; }
 .post-shell.without-toc { display: block; max-width: 850px; margin: 0 auto; }
 .post-content { min-width: 0; }
@@ -192,12 +193,11 @@
   .hero-note p { font-size: 16px; }
 }
 @media (max-width: 900px) {
-  .blog-hero { gap: 24px; padding: 28px; min-height: 180px; }
+  .blog-hero { gap: 24px; padding: 28px; min-height: 240px; }
   .hero-note { flex-basis: 140px; padding: 13px 14px; }
   .hero-note p { font-size: 15px; }
   .hero-description { font-size: clamp(10px, 1.48vw, 12px); }
   .year-group { grid-template-columns: 75px minmax(0, 1fr); gap: 22px; }
-  .writing-section { padding-left: 12px; padding-right: 12px; }
   .post-shell { display: block; padding-top: 28px; }
   .post-sidebar { display: none; }
   .post-content { max-width: 720px; margin: 0 auto; }
@@ -209,14 +209,14 @@
 @media (max-width: 640px) {
   .home-blog-entry { grid-template-columns: minmax(0, 1fr); gap: 3px; padding: 9px 13px; }
   .blog-header { height: 74px; }
-  .blog-nav, .blog-main { width: calc(100% - 36px); }
+  .blog-nav, .blog-main { width: calc(100% - 28px); }
   .blog-nav-links { gap: 22px; font-size: 12px; }
   .blog-brand { font-size: 18px; }
   .blog-hero { display: block; min-height: 0; padding: 24px 20px; border-radius: 11px; }
-  .hero-cloud { position: absolute; left: 8px; bottom: 6px; width: 58%; height: 104px; margin: 0; }
+  .hero-cloud { width: 100%; height: 170px; margin: 16px 0 0; }
   .hero-copy h1 { font-size: clamp(27px, 7.7vw, 42px); margin-bottom: 12px; letter-spacing: -.8px; }
   .hero-description { font-size: clamp(7.75px, 2.4vw, 12px); }
-  .hero-note { width: 126px; margin: 22px 6px 0 auto; padding: 11px 13px; transform: rotate(6deg); }
+  .hero-note { width: 126px; margin: -58px 0 0 auto; padding: 11px 13px; transform: rotate(6deg); }
   .hero-note p { font-size: 14px; }
   .landscape-sun { right: 17px; width: 100px; height: 100px; top: 38px; }
   .landscape-orbit { left: 28%; }
@@ -240,7 +240,7 @@
   .entry-topline { font-size: 10px; }
   .entry-tags { gap: 6px; }
   .entry-tags span { font-size: 10px; }
-  .blog-footer { width: calc(100% - 46px); gap: 12px; padding-top: 22px; }
+  .blog-footer { width: calc(100% - 28px); gap: 12px; padding-top: 22px; }
   .blog-footer p { font-size: 13px; }
   .blog-footer .back-top { font-size: 10px; }
   .post-topline { padding-top: 17px; padding-bottom: 20px; }

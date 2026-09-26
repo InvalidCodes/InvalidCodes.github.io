@@ -19,6 +19,11 @@ const round = (x, y, w, h, r) => (px, py) => {
   const dx = Math.max(x + r - px, 0, px - (x + w - r)), dy = Math.max(y + r - py, 0, py - (y + h - r));
   return px >= x && px <= x + w && py >= y && py <= y + h && dx * dx + dy * dy <= r * r;
 };
+const capsule = (x1, y1, x2, y2, r) => (px, py) => {
+  const dx = x2 - x1, dy = y2 - y1;
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
+  return (px - x1 - t * dx) ** 2 + (py - y1 - t * dy) ** 2 <= r * r;
+};
 const oval = (cx, cy, rx, ry) => (px, py) => ((px - cx) / rx) ** 2 + ((py - cy) / ry) ** 2 <= 1;
 const polygon = (points) => (px, py) => {
   let inside = false;
@@ -30,13 +35,15 @@ const polygon = (points) => (px, py) => {
 };
 const page = [[220, 80], [186, 62], [140, 52], [92, 52], [40, 62], [40, 196], [92, 186], [140, 186], [186, 194], [220, 210]];
 const SHAPES = {
+  // A robot arm reaching toward a small cup, as in the first article.
   robot: {
-    fill: [round(108, 64, 224, 150, 36), round(82, 110, 30, 60, 10), round(328, 110, 30, 60, 10),
-      round(213, 30, 14, 38, 4), oval(220, 22, 16, 16)],
-    holes: [oval(172, 108, 21, 21), oval(268, 108, 21, 21), round(182, 182, 76, 14, 7)],
-    center: [220, 150],
-    // Eyes and a mouth drawn into the cut-outs so the face reads at a glance.
-    marks: `<circle cx="172" cy="108" r="13"/><circle cx="268" cy="108" r="13"/><circle cx="176" cy="104" r="3.5" class="glint"/><circle cx="272" cy="104" r="3.5" class="glint"/><rect x="190" y="186" width="60" height="6" rx="3"/>`,
+    fill: [round(36, 198, 132, 28, 9), round(70, 160, 60, 44, 10), oval(100, 150, 42, 42),
+      capsule(100, 150, 216, 58, 38), oval(216, 58, 34, 34), capsule(216, 58, 336, 114, 29),
+      oval(336, 114, 22, 22), capsule(336, 114, 362, 142, 17), capsule(362, 142, 406, 130, 9),
+      capsule(362, 142, 380, 186, 9)],
+    holes: [oval(100, 150, 11, 11), oval(216, 58, 10, 10), oval(336, 114, 7, 7)],
+    center: [158, 108],
+    marks: `<circle cx="100" cy="150" r="5"/><circle cx="216" cy="58" r="4.5"/><circle cx="336" cy="114" r="3.5"/><path class="cup" d="M392 176h32l-4 40h-24z M424 186c10 0 10 18 -2 18"/>`,
   },
   book: {
     fill: [polygon(page), polygon(page.map(([x, y]) => [440 - x, y])), round(292, 196, 14, 30, 2)],
