@@ -559,6 +559,7 @@ li {
   background: #f7f7f9;
   border-left: 3px solid rgba(78, 42, 132, 0.28);
   border-radius: 0 5px 5px 0;
+  font-family: var(--font-prose);
   font-size: 0.86rem;
   line-height: 1.62;
 }
