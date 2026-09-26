@@ -34,8 +34,8 @@ ARCHIVES = {
     },
     "reading-notes": {
         "label": "Reading Notes", "url": "/blog/reading-notes/", "first_line": "Reading", "second_line": "notes.",
-        "description": "A personal collection of reading notes, book reflections, and thoughts on film.",
-        "intro": "Books, films, and lingering thoughts from my reading journey.",
+        "description": "A personal collection of reading notes and reflections on books.",
+        "intro": "Books, ideas, and reflections from my reading journey.",
         "reminder": ["Read slowly.", "Think freely."],
     },
 }
@@ -231,7 +231,7 @@ def build(root=ROOT):
 
     environment = Environment(loader=FileSystemLoader(root / "scripts/templates"), autoescape=select_autoescape())
     template = environment.get_template("blog.html")
-    archive_posts = {"all": posts, "reading-notes": [post for post in posts if post["collection"] == "reading-notes"]}
+    archive_posts = {key: [post for post in posts if post["collection"] == key] for key in ARCHIVES}
     contexts = {}
     for key, archive in ARCHIVES.items():
         entries = archive_posts[key]
@@ -254,7 +254,7 @@ def build(root=ROOT):
         destination.write_text(template.render(**page_context), encoding="utf-8")
 
     homepage = (root / "index.html").read_text(encoding="utf-8")
-    previews = [f'<a class="home-blog-entry" href="{post["url"]}"><span>{post["display_date"]} · {post["reading_minutes"]} min read</span><strong>{escape(post["title"])} <span aria-hidden="true">↗</span></strong></a>' for post in posts[:3]]
+    previews = [f'<a class="home-blog-entry" href="{post["url"]}"><span>{post["display_date"]} · {post["reading_minutes"]} min read</span><strong>{escape(post["title"])} <span aria-hidden="true">↗</span></strong></a>' for post in archive_posts["all"][:3]]
     if previews:
         homepage = re.sub(r"(?s)(<!-- BLOG_PREVIEW_START -->).*?(<!-- BLOG_PREVIEW_END -->)",
                           lambda match: match[1] + "\n" + "\n".join(previews) + "\n" + match[2], homepage)

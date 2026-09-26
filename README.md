@@ -8,8 +8,10 @@ the website and publishes `_site/` to GitHub Pages through `.github/workflows/pa
 Put a `.md` file in `blog/` (subfolders are supported), then commit and push.
 The archive and homepage preview update automatically, **newest first**.
 
-Put book/film reflections in `blog/reading-notes/` to include them in the dedicated
-**Reading Notes** archive as well as the main Blog timeline. The six imported
+Put book reflections in `blog/reading-notes/` to include them only in the dedicated
+**Reading Notes** archive. Blog and Reading Notes have separate lists, topic
+filters, and previous/next navigation; the homepage Blog preview includes only
+Blog posts. The five imported
 English translations are documented in [the import manifest](blog/reading-notes/README.md).
 
 Recommended format:

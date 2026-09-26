@@ -11,7 +11,7 @@
     {% if post and post.date|length == 10 %}<meta property="article:published_time" content="{{ post.date }}">{% endif %}
     <link rel="canonical" href="{{ site_url }}{{ post.url if post else archive.url }}">
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-math">
+    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-sections">
     <link rel="stylesheet" href="/assets/css/blog-code.css">
     <script defer src="/assets/js/blog.js?v=20260926-reading"></script>
     {% if post and post.has_math %}
@@ -53,14 +53,14 @@
       <section class="blog-hero" aria-labelledby="blog-title">
         <div class="hero-landscape" aria-hidden="true"><div class="landscape-orbit orbit-one"></div><div class="landscape-orbit orbit-two"></div><div class="landscape-orbit orbit-three"></div><div class="landscape-sun"></div></div>
         <div class="hero-copy"><h1 id="blog-title">{{ archive.first_line }} <em>{{ archive.second_line }}</em></h1><p class="hero-description">{{ archive.intro }}</p></div>
-        <div class="hero-note"><span class="note-number">01 / A LITTLE REMINDER</span><p>{{ archive.reminder[0] }}<br>{{ archive.reminder[1] }}</p><span class="note-signature">One thought at a time.</span></div>
+        <div class="hero-note"><p>{{ archive.reminder[0] }}<br>{{ archive.reminder[1] }}</p><span class="note-signature">One thought at a time.</span></div>
       </section>
       <section id="writing" class="writing-section" aria-label="{{ archive.label }} entries, newest first">
         {% if posts %}
-        <div class="archive-tools" hidden><div class="tag-filters" role="group" aria-label="Filter by topic"><button class="tag-filter active" type="button" data-tag="" aria-pressed="true">All notes</button>{% for tag in tags %}<button class="tag-filter" type="button" data-tag="{{ tag }}" aria-pressed="false">{{ tag }}</button>{% endfor %}</div><label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg><span class="sr-only">Search writing</span><input id="blog-search" type="search" placeholder="Find a note…" autocomplete="off"></label></div>
+        <div class="archive-tools" hidden><div class="tag-filters" role="group" aria-label="Filter by topic"><button class="tag-filter active" type="button" data-tag="" aria-pressed="true">{{ 'All posts' if archive_key == 'all' else 'All notes' }}</button>{% for tag in tags %}<button class="tag-filter" type="button" data-tag="{{ tag }}" aria-pressed="false">{{ tag }}</button>{% endfor %}</div><label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg><span class="sr-only">Search writing</span><input id="blog-search" type="search" placeholder="{{ 'Find a post…' if archive_key == 'all' else 'Find a note…' }}" autocomplete="off"></label></div>
         <div class="writing-list">
           {% for year, entries in years %}<section class="year-group" aria-labelledby="year-{{ year }}"><h3 class="year-label" id="year-{{ year }}">{{ year }}<span>{{ '%02d'|format(entries|length) }} {{ 'entry' if entries|length == 1 else 'entries' }}</span></h3><div class="year-entries">
-            {% for entry in entries %}<article class="blog-entry" data-tags="{{ entry.tags|tojson|forceescape }}" data-search="{{ (entry.title ~ ' ' ~ entry.description ~ ' ' ~ entry.tags|join(' '))|lower }}"><div class="entry-topline"><time datetime="{{ entry.date }}">{{ entry.short_date }}</time><span class="entry-reading">{{ entry.reading_minutes }} min read</span>{% if entry.collection == 'reading-notes' and archive_key == 'all' %}<a class="entry-collection" href="/blog/reading-notes/">Reading Notes</a>{% endif %}</div><h3><a href="{{ entry.url }}">{{ entry.title }}<span class="entry-arrow" aria-hidden="true">↗</span></a></h3><p class="entry-excerpt">{{ entry.description }}</p><div class="entry-tags">{% for tag in entry.tags %}<span>{{ tag }}</span>{% endfor %}</div></article>{% endfor %}
+            {% for entry in entries %}<article class="blog-entry" data-tags="{{ entry.tags|tojson|forceescape }}" data-search="{{ (entry.title ~ ' ' ~ entry.description ~ ' ' ~ entry.tags|join(' '))|lower }}"><div class="entry-topline"><time datetime="{{ entry.date }}">{{ entry.short_date }}</time><span class="entry-reading">{{ entry.reading_minutes }} min read</span></div><h3><a href="{{ entry.url }}">{{ entry.title }}<span class="entry-arrow" aria-hidden="true">↗</span></a></h3><p class="entry-excerpt">{{ entry.description }}</p><div class="entry-tags">{% for tag in entry.tags %}<span>{{ tag }}</span>{% endfor %}</div></article>{% endfor %}
           </div></section>{% endfor %}
         </div>
         <p class="search-status sr-only" role="status" aria-live="polite"></p><div class="no-results" hidden><span aria-hidden="true">✳</span><h3>No notes found.</h3><p>Try another word or topic.</p><button type="button" id="clear-search">Show all writing</button></div>
