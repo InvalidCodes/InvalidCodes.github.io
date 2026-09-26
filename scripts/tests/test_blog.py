@@ -43,7 +43,7 @@ class BlogBuildTests(unittest.TestCase):
 
     def test_word_cloud_frequencies(self):
         post = read_post(self.write("cloud.md", "# Robot policies\n\nThe robot's policy uses a DCT. Robots learn policies, and the DCT helps each robot.\n\n```python\nignored_code = robot\n```\n\nSee [^a].\n\n[^a]: arXiv robot reference."), self.root)
-        words = dict(word_frequencies([post]))
+        words = {word: count for word, count, _ in word_frequencies([post])}
         self.assertEqual(words["robot"], 4)
         self.assertEqual(words["policy"], 3)
         self.assertEqual(words["DCT"], 2)

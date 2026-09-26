@@ -1,4 +1,4 @@
-/* Decorative layer for the notebook: the hero word cloud, the opening drop cap,
+/* Decorative layer for the notebook: the hero word cloud and sky, the opening drop cap,
    and cursor stardust. Everything here is visual only and safe to skip. */
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const INK = ["#4a3264", "#6a4a88", "#9a6f9f", "#7e5d9f", "#b07a9a", "#6f79ad", "#c49a5a", "#5d4b86", "#a784c0"];
@@ -97,7 +97,7 @@ async function drawCloud(host) {
   const rand = random(words.length * 7919 + words[0][1]);
   const placed = [];
   const place = (text, face, size, x0, y0, b, className, color) => {
-    placed.push({ text, face, size, x: x0 * CELL - b.left + (Math.ceil(b.width / CELL) * CELL - b.width) / 2,
+    placed.push({ text, face, size, cx: (x0 + b.width / CELL / 2) * CELL, cy: (y0 + b.height / CELL / 2) * CELL, x: x0 * CELL - b.left + (Math.ceil(b.width / CELL) * CELL - b.width) / 2,
       y: y0 * CELL + b.ascent + (Math.ceil(b.height / CELL) * CELL - b.height) / 2, className, color });
   };
 
@@ -175,13 +175,165 @@ async function drawCloud(host) {
     node.style.font = font(word.face, word.size.toFixed(2));
     node.style.fill = word.color;
     node.style.setProperty("--i", index);
+    node.center = [word.cx, word.cy];
     svg.append(node);
   });
   host.append(svg);
   host.classList.add("is-ready");
 }
 
-document.querySelectorAll(".hero-cloud[data-words]").forEach((host) => drawCloud(host));
+// A click on a cloud word searches the archive for every post that uses it.
+document.querySelectorAll(".hero-cloud[data-words]").forEach((host) => {
+  drawCloud(host);
+  host.addEventListener("click", (event) => {
+    const word = event.target.closest(".cloud-major");
+    const search = document.querySelector("#blog-search");
+    if (!word || !search) return;
+    search.value = word.textContent.toLowerCase();
+    search.dispatchEvent(new Event("input"));
+    document.querySelector(".archive-tools").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  });
+});
+
+// The hero sky: stars that join into constellations around the pointer, a slow parallax,
+// cloud grain that parts as the pointer passes, and the occasional shooting star.
+document.querySelectorAll(".blog-hero").forEach((hero) => {
+  const sky = document.createElement("canvas");
+  sky.className = "hero-sky";
+  hero.querySelector(".hero-landscape").append(sky);
+  const ctx = sky.getContext("2d");
+  const rand = random(20260926);
+  const tones = ["#6a4a88", "#6a4a88", "#8f6aa8", "#b07a9a", "#c49a5a", "#6f79ad", "#fffaf2"];
+  const stars = Array.from({ length: 190 }, () => ({ x: rand(), y: rand(), r: 0.6 + rand() ** 3 * 2.2,
+    depth: 0.3 + rand() * 0.7, phase: rand() * 6.3, speed: 0.4 + rand(), tone: tones[Math.floor(rand() * tones.length)] }));
+  let width = 0, height = 0, count = 0, frame = 0, visible = true, previous = 0, meteor = null, nextMeteor = 2600;
+  const pointer = { x: 0, y: 0, active: false }, lamp = { x: 0, y: 0, strength: 0 }, tilt = { x: 0, y: 0 };
+
+  const resize = () => {
+    const ratio = Math.min(devicePixelRatio || 1, 2);
+    width = hero.clientWidth;
+    height = hero.clientHeight;
+    count = Math.min(stars.length, Math.round(width * height / 4600));  // Keep the same density on every screen.
+    sky.width = width * ratio;
+    sky.height = height * ratio;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    if (reduceMotion) draw(0);
+  };
+  function draw(time) {
+    ctx.clearRect(0, 0, width, height);
+    const reach = Math.min(230, width * 0.22), near = [];
+    if (lamp.strength > 0.01) {  // A soft pool of light where the pointer is.
+      const light = ctx.createRadialGradient(lamp.x, lamp.y, 0, lamp.x, lamp.y, reach);
+      light.addColorStop(0, "#fffaf0");
+      light.addColorStop(1, "#fffaf000");
+      ctx.globalAlpha = 0.5 * lamp.strength;
+      ctx.fillStyle = light;
+      ctx.fillRect(lamp.x - reach, lamp.y - reach, reach * 2, reach * 2);
+    }
+    for (const star of stars.slice(0, count)) {
+      let x = star.x * width + tilt.x * 14 * star.depth + Math.sin(time / 4200 * star.speed + star.phase) * 5;
+      let y = star.y * height + tilt.y * 10 * star.depth + Math.cos(time / 5100 * star.speed + star.phase) * 4;
+      const d = Math.hypot(x - lamp.x, y - lamp.y), glow = lamp.strength * Math.max(0, 1 - d / reach);
+      if (glow > 0) {
+        x += (lamp.x - x) * glow * 0.1;
+        y += (lamp.y - y) * glow * 0.1;
+        near.push([x, y, glow]);
+      }
+      const twinkle = 0.55 + 0.45 * Math.sin(time / 900 * star.speed + star.phase);
+      ctx.globalAlpha = Math.min(1, 0.3 + 0.4 * twinkle + glow * 0.7);
+      ctx.fillStyle = star.tone;
+      ctx.beginPath();
+      ctx.arc(x, y, star.r * (1 + glow * 0.9), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.lineWidth = 0.9;
+    ctx.strokeStyle = "#6a4a88";
+    // Each lit star reaches for its two nearest lit neighbours, which reads as constellations, not a mesh.
+    const links = new Set();
+    near.forEach(([ax, ay], i) => {
+      near.map(([bx, by], j) => [Math.hypot(ax - bx, ay - by), j]).filter(([d, j]) => j !== i && d < 120)
+        .sort((p, q) => p[0] - q[0]).slice(0, 2).forEach(([, j]) => links.add(i < j ? i * 1000 + j : j * 1000 + i));
+    });
+    for (const link of links) {
+      const [ax, ay, ag] = near[Math.floor(link / 1000)], [bx, by, bg] = near[link % 1000], d = Math.hypot(ax - bx, ay - by);
+      ctx.globalAlpha = Math.min(1, (1 - d / 150) * Math.min(ag, bg) * 1.6);
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      ctx.stroke();
+    }
+    if (meteor) {
+      const k = (time - meteor.start) / 1100;
+      if (k >= 1) meteor = null;
+      else {
+        const hx = meteor.x - k * 420, hy = meteor.y + k * 170;
+        const tail = ctx.createLinearGradient(hx, hy, hx + 120, hy - 48);
+        tail.addColorStop(0, "#fffaf2");
+        tail.addColorStop(1, "#fffaf200");
+        ctx.globalAlpha = Math.sin(k * Math.PI);
+        ctx.strokeStyle = tail;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(hx, hy);
+        ctx.lineTo(hx + 120, hy - 48);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  function tick(time) {
+    const step = Math.min(48, time - (previous || time)) || 16;
+    previous = time;
+    // With no pointer in the hero, the lamp wanders slowly across the open sky on the left.
+    const goal = pointer.active ? pointer : { x: width * (0.3 + 0.2 * Math.sin(time / 6100)), y: height * (0.72 + 0.14 * Math.sin(time / 3700)) };
+    const ease = 1 - 0.9 ** (step / 16);
+    lamp.x += (goal.x - lamp.x) * ease;
+    lamp.y += (goal.y - lamp.y) * ease;
+    lamp.strength += ((pointer.active ? 1 : 0.7) - lamp.strength) * ease * 0.5;
+    const tx = pointer.active ? pointer.x / width - 0.5 : 0, ty = pointer.active ? pointer.y / height - 0.5 : 0;
+    tilt.x += (tx - tilt.x) * ease * 0.6;
+    tilt.y += (ty - tilt.y) * ease * 0.6;
+    hero.style.setProperty("--tilt-x", tilt.x.toFixed(4));
+    hero.style.setProperty("--tilt-y", tilt.y.toFixed(4));
+    nextMeteor -= step;
+    if (nextMeteor <= 0 && !meteor) {
+      meteor = { start: time, x: width * (0.55 + rand() * 0.4), y: height * (0.02 + rand() * 0.25) };
+      nextMeteor = 7000 + rand() * 6000;
+    }
+    draw(time);
+    frame = visible && !document.hidden ? requestAnimationFrame(tick) : 0;
+    if (!frame) previous = 0;
+  }
+  const start = () => { if (!frame && visible && !document.hidden) frame = requestAnimationFrame(tick); };
+
+  resize();
+  new ResizeObserver(resize).observe(hero);
+  if (reduceMotion) return;
+  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; start(); }).observe(hero);
+  document.addEventListener("visibilitychange", start);
+
+  let dust = [];
+  hero.addEventListener("pointermove", (event) => {
+    const box = hero.getBoundingClientRect();
+    pointer.x = event.clientX - box.left;
+    pointer.y = event.clientY - box.top;
+    pointer.active = true;
+    const svg = hero.querySelector(".hero-cloud svg");
+    if (!svg) return;
+    const frameBox = svg.getBoundingClientRect(), scale = 440 / frameBox.width;
+    const px = (event.clientX - frameBox.left) * scale, py = (event.clientY - frameBox.top) * scale;
+    if (!dust.length) dust = [...svg.querySelectorAll(".cloud-dust")];
+    for (const node of dust) {
+      const dx = node.center[0] - px, dy = node.center[1] - py, d = Math.hypot(dx, dy);
+      const push = d < 46 ? ((1 - d / 46) ** 2 * 14) / Math.max(d, 1) : 0;
+      node.style.translate = push ? `${(dx * push).toFixed(1)}px ${(dy * push).toFixed(1)}px` : "";
+    }
+  }, { passive: true });
+  hero.addEventListener("pointerleave", () => {
+    pointer.active = false;
+    dust.forEach((node) => { node.style.translate = ""; });
+  });
+});
 
 // An editorial initial on an opening paragraph, never one buried mid-article.
 if (document.documentElement.lang.startsWith("en")) {

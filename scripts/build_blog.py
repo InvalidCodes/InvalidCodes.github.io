@@ -117,9 +117,9 @@ def excerpt(body):
 
 
 def word_frequencies(posts, limit=80):
-    """Most frequent content words across an archive, as [display form, count] pairs."""
-    counts, forms = Counter(), {}
-    for post in posts:
+    """Most frequent content words across an archive, as [display form, count, indices of posts using it]."""
+    counts, forms, where = Counter(), {}, {}
+    for index, post in enumerate(posts):
         html = re.sub(r'(?s)<pre\b.*?</pre>|<(span|div) class="arithmatex">.*?</\1>|<div class="footnote">.*', " ", post["html"])
         text = (post["title"] + " " + plain_text(html)).replace("\u2019", "'")
         for token in re.findall(r"[A-Za-z]+(?:'[A-Za-z]+)*", text):
@@ -129,11 +129,13 @@ def word_frequencies(posts, limit=80):
                 continue
             counts[key] += 1
             forms.setdefault(key, Counter())[token] += 1
+            where.setdefault(key, set()).add(index)
     for key in sorted(counts, key=len, reverse=True):  # Fold plurals into an attested singular.
         singular = key[:-3] + "y" if key.endswith("ies") else key[:-1] if key.endswith("s") and not key.endswith("ss") else None
         if singular in counts:
             counts[singular] += counts.pop(key)
             forms[singular].update(forms.pop(key))
+            where[singular] |= where.pop(key)
     ranked = [(key, count) for key, count in counts.most_common() if count > 1][:limit]
 
     def display(key):
@@ -142,7 +144,7 @@ def word_frequencies(posts, limit=80):
             return key
         return max(forms[key], key=lambda form: (form.lower() == key, forms[key][form]))
 
-    return [[display(key), count] for key, count in ranked]
+    return [[display(key), count, sorted(where[key])] for key, count in ranked]
 
 
 def read_post(path, root=ROOT):
@@ -285,11 +287,14 @@ def build(root=ROOT):
     contexts = {}
     for key, archive in ARCHIVES.items():
         entries = archive_posts[key]
+        cloud = word_frequencies(entries)
+        for index, entry in enumerate(entries):  # Lets a click on a cloud word find every post that uses it.
+            entry["cloud_terms"] = " ".join(word.lower() for word, _, users in cloud if index in users)
         context = {
             "site_url": SITE_URL, "posts": entries, "post": None, "archive": archive, "archive_key": key,
             "years": [(year, list(items)) for year, items in groupby(entries, key=lambda post: post["year"])],
             "tags": sorted({tag for post in entries for tag in post["tags"]}),
-            "cloud_words": word_frequencies(entries),
+            "cloud_words": [[word, count] for word, count, _ in cloud],
         }
         contexts[key] = context
         destination = output / archive["url"].strip("/") / "index.html"
