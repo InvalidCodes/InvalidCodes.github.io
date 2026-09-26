@@ -30,9 +30,7 @@ Suppose we record one joint’s angle at equally spaced moments:
 | Time | Joint angle |
 |---|---:|
 | 0.00 seconds | 10° |
-| 0.02 seconds | 12° |
 | 0.04 seconds | 15° |
-| 0.06 seconds | 19° |
 | 0.08 seconds | 22° |
 
 This is a **time-series signal**: a quantity whose value changes over time. “Signal” does not necessarily mean a radio transmission. Temperature, microphone pressure, and a robot joint angle can all be signals.
