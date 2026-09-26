@@ -29,16 +29,14 @@ ARCHIVES = {
     "all": {
         "label": "Blog", "url": "/blog/", "first_line": "Ideas in", "second_line": "progress.",
         "description": "Notes on research, engineering, and the things I learn along the way.",
-        "intro": ["Things I learn. Things I build.", "A few thoughts along the way."],
+        "intro": "Things I learned, things I've built, a few thoughts along the way.",
         "reminder": ["Stay curious.", "Keep a record."],
-        "subjects": "RESEARCH / ENGINEERING / LIFE",
     },
     "reading-notes": {
         "label": "Reading Notes", "url": "/blog/reading-notes/", "first_line": "Reading", "second_line": "notes.",
         "description": "A personal collection of reading notes, book reflections, and thoughts on film.",
-        "intro": ["Books, films, and lingering thoughts.", "Notes from my own reading journey."],
+        "intro": "Books, films, and lingering thoughts from my reading journey.",
         "reminder": ["Read slowly.", "Think freely."],
-        "subjects": "BOOKS / FILMS / REFLECTIONS",
     },
 }
 
