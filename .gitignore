@@ -4,6 +4,9 @@ Thumbs.db
 .env
 .env.*
 node_modules/
+.venv/
+_site/
+__pycache__/
 plan.md
 
 # Local source photos; the website uses optimized WebP derivatives instead.

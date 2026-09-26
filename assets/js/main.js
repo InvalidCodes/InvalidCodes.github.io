@@ -2,6 +2,7 @@ const menuToggle = document.querySelector(".menu-toggle");
 const navLinks = document.querySelector(".nav-links");
 const navAnchors = Array.from(document.querySelectorAll(".nav-links a"));
 const sections = navAnchors
+  .filter((link) => link.getAttribute("href").startsWith("#"))
   .map((link) => document.querySelector(link.getAttribute("href")))
   .filter(Boolean);
 
