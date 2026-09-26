@@ -49,6 +49,30 @@ class BlogBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "reserved"):
             read_post(self.write("index.md", "# A note"), self.root)
 
+    def test_math_preserves_tex_and_ignores_code(self):
+        post = read_post(self.write("math.md", r"""---
+date: 2026-09-26
+subtitle: An introduction
+---
+# A mathematical note
+
+Inline \(C_L\) and $x^2$ stay mathematical.
+
+\[
+\underbrace{\|\hat C_L-C_L\|^2}_{\text{low-band error}}
+\]
+
+```text
+\(this_is_code\)
+```
+"""), self.root)
+        self.assertTrue(post["has_math"])
+        self.assertEqual(post["subtitle"], "An introduction")
+        self.assertEqual(post["html"].count('class="arithmatex"'), 3)
+        self.assertIn(r'\hat C_L-C_L', post["html"])
+        self.assertIn('this_is_code', post["html"])
+        self.assertNotIn('<em>is</em>', post["html"])
+
     def test_month_precision_and_reading_notes_archive(self):
         shutil.copytree(ROOT / "scripts/templates", self.root / "scripts/templates")
         (self.root / "assets/css").mkdir(parents=True)
@@ -109,6 +133,7 @@ class BlogBuildTests(unittest.TestCase):
         homepage = (output / "index.html").read_text()
         self.assertLess(homepage.index("Later"), homepage.index("Early"))
         self.assertIn("Older entry", page)
+        self.assertNotIn("katex.min.js", page)
 
 
 if __name__ == "__main__":

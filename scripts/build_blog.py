@@ -153,8 +153,12 @@ def read_post(path, root=ROOT):
             line = f"<{line.strip()}>"
         lines.append(line)
     renderer = markdown.Markdown(
-        extensions=["extra", "codehilite", "toc", "sane_lists"],
-        extension_configs={"toc": {"toc_depth": "2-3", "slugify": slugify_unicode}, "codehilite": {"guess_lang": False}},
+        extensions=["extra", "codehilite", "toc", "sane_lists", "pymdownx.arithmatex"],
+        extension_configs={
+            "toc": {"toc_depth": "2-3", "slugify": slugify_unicode},
+            "codehilite": {"guess_lang": False},
+            "pymdownx.arithmatex": {"generic": True},
+        },
     )
     rendered = renderer.convert("\n".join(lines))
     rendered = re.sub(r"(<table\b.*?</table>)", r'<div class="table-scroll">\1</div>', rendered, flags=re.S)
@@ -166,7 +170,8 @@ def read_post(path, root=ROOT):
         raise ValueError(f"{path.name} is reserved for the archive; use a different article filename")
     collection = "reading-notes" if path.relative_to(root / "blog").parts[0] == "reading-notes" else "all"
     return {
-        "title": title, "date": published.strftime("%Y-%m") if month_only else published.isoformat(), "year": published.year,
+        "title": title, "subtitle": str(metadata.get("subtitle", "")),
+        "date": published.strftime("%Y-%m") if month_only else published.isoformat(), "year": published.year,
         "display_date": f"{MONTHS[published.month]} {published.year}" if month_only else f"{MONTHS[published.month]} {published.day}, {published.year}",
         "short_date": MONTHS[published.month].upper() if month_only else f"{MONTHS[published.month].upper()} {published.day:02d}",
         "collection": collection, "source_url": str(metadata.get("source_url", "")),
@@ -176,6 +181,7 @@ def read_post(path, root=ROOT):
         "tags": tags, "lang": str(metadata.get("lang", "zh-CN" if re.search(r"[\u3400-\u9fff]", source) else "en")),
         "reading_minutes": max(1, math.ceil(words / 220 + chinese_chars / 400)),
         "html": rendered, "toc": renderer.toc if renderer.toc_tokens else "",
+        "has_math": 'class="arithmatex"' in rendered,
     }
 
 

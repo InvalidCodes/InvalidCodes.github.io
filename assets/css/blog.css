@@ -107,6 +107,7 @@
 .post-header { max-width: 850px; margin: 53px auto 42px; }
 .post-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; color: #97879f; }
 .post-header h1 { font: 400 clamp(42px, 5.3vw, 67px)/1.08 var(--serif); letter-spacing: -1px; margin: 22px 0 25px; overflow-wrap: anywhere; }
+.post-subtitle { max-width: 760px; margin: -8px 0 26px; color: #87768f; font-size: 17px; line-height: 1.6; }
 .post-byline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: #807487; font-size: 11px; }
 .post-byline img { border-radius: 50%; object-fit: cover; margin-right: 2px; }
 .byline-rule { height: 16px; width: 1px; background: #dfd4e6; margin: 0 6px; }
@@ -143,10 +144,14 @@
 .prose th { background: #f0eaf4; font-weight: 600; white-space: nowrap; }
 .prose .footnote { font-size: 13px; color: #8a7b94; }
 .prose .post-source { margin-top: 40px; font-size: 12px; }
+.prose div.arithmatex { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 6px 0; margin: 24px 0; }
+.prose .katex { font-size: 1.05em; }
+.prose .katex-display { margin: .6em 0; }
 .post-sidebar { position: sticky; top: 35px; max-height: calc(100vh - 70px); overflow-y: auto; scrollbar-width: thin; border-left: 1px solid var(--line); padding-left: 20px; }
 .post-toc ul { padding: 0; list-style: none; margin: 16px 0 0; }
 .post-toc ul ul { padding-left: 12px; margin-top: 6px; }
 .post-toc li { margin: 9px 0; font-size: 11px; color: #9b8da3; line-height: 1.5; }
+.post-toc a { display: block; }
 .post-toc a:hover { color: #755386; }
 .end-mark { font-size: 27px; color: #baa6c7; text-align: center; margin: 37px 0; }
 .post-pagination { display: flex; justify-content: space-between; gap: 35px; border-top: 1px solid var(--line); margin: 0 0 70px; padding-top: 25px; }
@@ -208,6 +213,7 @@
   .post-topline .blog-eyebrow { font-size: 8px; }
   .post-header { margin: 36px 5px 29px; }
   .post-header h1 { font-size: 47px; letter-spacing: -.5px; }
+  .post-subtitle { font-size: 14px; margin-top: -9px; }
   .post-layout { padding-top: 30px; }
   .prose { font-size: 15px; line-height: 1.9; margin: 0 5px; }
   .prose h2 { font-size: 24px; }

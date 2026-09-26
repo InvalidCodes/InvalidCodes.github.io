@@ -11,9 +11,14 @@
     {% if post and post.date|length == 10 %}<meta property="article:published_time" content="{{ post.date }}">{% endif %}
     <link rel="canonical" href="{{ site_url }}{{ post.url if post else archive.url }}">
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-compact">
+    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-math">
     <link rel="stylesheet" href="/assets/css/blog-code.css">
     <script defer src="/assets/js/blog.js?v=20260926-reading"></script>
+    {% if post and post.has_math %}
+    <link rel="stylesheet" href="/assets/vendor/katex/katex.min.css">
+    <script defer src="/assets/vendor/katex/katex.min.js"></script>
+    <script defer src="/assets/js/blog-math.js"></script>
+    {% endif %}
   </head>
   <body class="blog-site {{ 'post-page' if post else 'archive-page' }}">
     <a class="blog-skip" href="#main">Skip to content</a>
@@ -29,6 +34,7 @@
       <header class="post-header">
         <div class="post-meta"><time datetime="{{ post.date }}">{{ post.display_date }}</time><span aria-hidden="true">/</span><span>{{ post.reading_minutes }} min read</span></div>
         <h1>{{ post.title }}</h1>
+        {% if post.subtitle %}<p class="post-subtitle">{{ post.subtitle }}</p>{% endif %}
         <div class="post-byline"><img src="/assets/images/profile-640.webp" alt="" width="36" height="36"><span>Yunfei Ge</span><span class="byline-rule" aria-hidden="true"></span>{% for tag in post.tags %}<a class="post-tag" href="{{ archive.url }}?tag={{ tag|urlencode }}#writing">{{ tag }}</a>{% endfor %}</div>
       </header>
       <div class="post-layout {{ 'without-toc' if not post.toc }}">

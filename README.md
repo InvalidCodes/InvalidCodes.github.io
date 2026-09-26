@@ -46,6 +46,7 @@ The article starts here.
   Use `date: '2021-01'` when only the month is known; the page will not invent a day.
 - The first title and date headings are displayed in the article header, rather
   than repeated in the body. An explicit `description` replaces the auto excerpt.
+- Optional `subtitle` appears below the article title, outside the table of contents.
 - `draft: true`, empty files, `README.md`, and files/folders beginning with `_` or
   `.` are omitted. Draft Markdown sources are not included in the deployed site.
   This is a public repository: committed source files remain visible on GitHub.
@@ -60,6 +61,9 @@ The article starts here.
 - Markdown supports headings, tables, syntax-highlighted fenced code, blockquotes,
   footnotes, and an automatic heading outline. HTML is supported for trusted,
   author-written content.
+- Math uses `\(...\)` or `$...$` inline, and `\[...\]` or `$$...$$` in separate
+  blocks. Arithmatex preserves the TeX during the build; locally hosted KaTeX and
+  fonts render it in the browser. Math assets load only for articles with formulas.
 
 ## Local preview
 
