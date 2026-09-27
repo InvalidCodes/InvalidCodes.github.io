@@ -1,15 +1,15 @@
 ---
-title: What Should a Robot Remember About the World?
-subtitle: From VAE Latents to JEPA Based World Action Models
+title: Reconstruct or Predict?
+subtitle: How World Action Models Choose Their World State, from VAE Latents to JEPA
 date: 2026-09-24
 description: Many world action models inherit a VAE latent from video generation. This post asks what a robot's world state should actually keep, and follows the shift toward JEPA representations shaped by prediction and control.
-tags: [Robot Learning, WAM]
+tags: [WAM]
 lang: en
 ---
 
-# What Should a World Action Model Represent?
+# Reconstruct or Predict?
 
-## From VAE Latents to JEPA World States
+## How World Action Models Choose Their World State, from VAE Latents to JEPA
 
 ## 1. The real question is what counts as a world state
 
