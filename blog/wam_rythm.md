@@ -3,7 +3,7 @@ title: The Rhythm of a Robot
 subtitle: A Beginner’s Journey Through Frequency-Based Policies, Flow Matching, and World-Action Models
 date: 2026-09-26
 description: An accessible guide to frequency-based robot policies, flow matching, and world-action models, from motion representations to closed-loop execution.
-tags: [Robot Learning, WAM]
+tags: [WAM]
 lang: en
 ---
 
