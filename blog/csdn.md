@@ -3,7 +3,7 @@ title: My Previous Technical Blogs
 subtitle: 102 problem-solving guides on CSDN, written since my freshman year
 date: 2025-09-01
 description: Since 2021, I have written 102 technical posts on CSDN, each a detailed guide to a problem I solved. I am keeping them here as a memento.
-tags: [Engineering, Reflections]
+tags: [Engineering]
 lang: en
 ---
 

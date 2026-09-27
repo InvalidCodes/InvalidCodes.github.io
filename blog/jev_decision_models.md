@@ -7,8 +7,6 @@ tags: [Jev, LLM]
 lang: en
 ---
 
-## A beginner friendly guide to state, calibrated decisions, RLCD, and the boundary between Jev and ordinary classifiers
-
 *Literature snapshot: September 2026. TypeSafe has publicly described Jev's interface, parallel sampling, workflow evaluations, and the name Reinforcement Learning for Calibrated Decisions. The company has not published enough architectural or optimization detail to reconstruct the full model or RLCD training algorithm. [^typesafe-intro]*
 
 Imagine a customer support system that receives a long conversation, the customer's account state, recent payments, and a record of what an automated agent already tried. The software needs several judgments immediately. Is the customer frustrated? Is there a fraud risk? Should a person review the case? Should the account be frozen?
