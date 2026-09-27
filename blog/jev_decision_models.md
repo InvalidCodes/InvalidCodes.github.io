@@ -7,8 +7,6 @@ tags: [Jev, LLM]
 lang: en
 ---
 
-# Why Jev Can Make Decisions Faster Than GPT
-
 ## A beginner friendly guide to state, calibrated decisions, RLCD, and the boundary between Jev and ordinary classifiers
 
 *Literature snapshot: September 2026. TypeSafe has publicly described Jev's interface, parallel sampling, workflow evaluations, and the name Reinforcement Learning for Calibrated Decisions. The company has not published enough architectural or optimization detail to reconstruct the full model or RLCD training algorithm. [^typesafe-intro]*

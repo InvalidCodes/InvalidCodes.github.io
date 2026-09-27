@@ -9,8 +9,6 @@ lang: en
 
 # Reconstruct or Predict?
 
-## How World Action Models Choose Their World State, from VAE Latents to JEPA
-
 ## 1. The real question is what counts as a world state
 
 A World Action Model needs an internal state that supports two jobs. It should summarize what matters in the current scene, and it should support prediction of how that scene changes when the robot acts. This makes representation design a central part of WAM design. A model can have a powerful action head and a large backbone, yet its control quality still depends on whether the latent state organizes geometry, motion, objects, and contact in a form that the dynamics model can use.
