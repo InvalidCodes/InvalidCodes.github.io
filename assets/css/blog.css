@@ -1,4 +1,6 @@
 /* Shared with the small notebook section on the academic homepage. */
+/* The highlighter stroke that sweeps under links on hover and marks the section being read. */
+:root { --marker: linear-gradient(transparent 52%, #e2cdf0 52%, #f2d9c5 94%, transparent 94%); }
 .blog-eyebrow { margin: 0; color: var(--subtle, #6b6174); font: 600 11px/1.6 var(--font-note); letter-spacing: .17em; }
 .home-blog { margin-top: 8px; }
 .home-blog-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
@@ -18,8 +20,6 @@
   --violet: #573878; --violet-soft: #8565a0; --line: #d8cce1;
   --sans: var(--font-heading);
   --klee: var(--font-note);
-  /* The highlighter stroke that sweeps under links on hover and marks the section being read. */
-  --marker: linear-gradient(transparent 52%, #e2cdf0 52%, #f2d9c5 94%, transparent 94%);
   /* Klee One is too thin at small sizes, so interface text uses its 600 weight;
      prose and the large handwritten note reset to 400. */
   margin: 0; color: var(--ink); background: #f6f3f7; font: 600 15px/1.65 var(--klee); -webkit-font-smoothing: antialiased;
@@ -107,8 +107,8 @@
 .blog-entry h3 a { display: flex; justify-content: space-between; align-items: start; gap: 25px; }
 .entry-arrow { font: 24px/1.5 var(--sans); color: var(--violet-soft); transition: color .2s, transform .2s; }
 .blog-entry h3 a:hover { color: var(--violet); }
-.entry-title > span, .post-toc a, .prose a, .back-link, .mark-text, .blog-nav-links a, .back-top { background: var(--marker) no-repeat 0 0 / 0 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: color .3s, text-decoration-color .3s, background-size .6s cubic-bezier(.2, .8, .2, 1); }
-.blog-entry h3 a:hover .entry-title > span, .post-toc a:hover, .prose a:hover, .back-link:hover, .post-pagination a:hover .mark-text, .blog-nav-links a:hover, .back-top:hover { background-size: 100% 100%; }
+.entry-title > span, .post-toc a, .prose a, .back-link, .mark-text, .blog-nav-links a, .back-top, .home-blog-heading > a { background: var(--marker) no-repeat 0 0 / 0 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: color .3s, text-decoration-color .3s, background-size .6s cubic-bezier(.2, .8, .2, 1); }
+.blog-entry h3 a:hover .entry-title > span, .post-toc a:hover, .prose a:hover, .back-link:hover, .post-pagination a:hover .mark-text, .blog-nav-links a:hover, .back-top:hover, .home-blog-heading > a:hover { background-size: 100% 100%; }
 /* Nav links carry vertical padding for their hit area; keep the stroke on the text itself. */
 .blog-nav-links a { background-origin: content-box; background-clip: content-box; }
 .back-top:hover { color: var(--violet) !important; }
@@ -126,7 +126,7 @@
 .blog-footer p::before { content: "\2726"; margin-right: 10px; color: var(--violet-soft); }
 .back-top { color: var(--subtle) !important; font-size: 11px; white-space: nowrap; }
 /* The homepage borrows the notebook footer; give it the Blog tokens it would otherwise lack. */
-.home-footer { --subtle: #564d61; --violet: #573878; --violet-soft: #8565a0; --marker: linear-gradient(transparent 52%, #e2cdf0 52%, #f2d9c5 94%, transparent 94%); }
+.home-footer { --subtle: #564d61; --violet: #573878; --violet-soft: #8565a0; }
 .home-footer .back-top { font-family: var(--klee); text-decoration: none; }
 
 /* Article typography, intentionally spacious enough for technical writing. */
@@ -275,7 +275,7 @@
   @keyframes twinkle { 0%, 100% { opacity: .25; scale: .6; } 50% { opacity: .95; scale: 1; } }
   @keyframes cloud-in { from { opacity: 0; } }
 }
-@media (prefers-reduced-motion: reduce) { .home-blog-entry, .entry-arrow, .entry-title > span, .post-toc a, .prose a, .back-link, .mark-text, .blog-nav-links a, .back-top { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .home-blog-entry, .entry-arrow, .entry-title > span, .post-toc a, .prose a, .back-link, .mark-text, .blog-nav-links a, .back-top, .home-blog-heading > a { transition: none; } }
 @media print {
   .blog-header, .blog-footer, .post-topline, .post-sidebar, .mobile-toc, .post-pagination, .copy-code, .stardust, .blog-site::before, .blog-site::after { display: none; }
   .blog-site { background: white; }
