@@ -1,13 +1,11 @@
 ---
-title: The Rhythm of a Robot
-subtitle: A Beginner’s Journey Through Frequency-Based Policies, Flow Matching, and World-Action Models
+title: Robot Actions in the Frequency Domain
+subtitle: How DCT, Wavelets, and Flow Matching Reshape Robot Policies, and Where World-Action Models Fit
 date: 2026-09-26
-description: An accessible guide to frequency-based robot policies, flow matching, and world-action models, from motion representations to closed-loop execution.
+description: A beginner’s guide to treating robot action chunks as signals, from DCT tokenization and coarse-to-fine generation to frequency-aware flow matching, world-action models, and closed-loop execution.
 tags: [WAM]
 lang: en
 ---
-
-# The Rhythm of a Robot
 
 ## 1. A robot reaches for a cup and almost gets it right
 
