@@ -186,6 +186,8 @@
 .prose .katex { font-size: 1.05em; }
 .prose .katex-display { margin: .6em 0; }
 .post-sidebar { position: sticky; top: 32px; max-height: calc(100vh - 64px); overflow-y: auto; scrollbar-width: thin; border-right: 1px solid var(--line); padding: 3px 20px 0 0; }
+.post-toc > .blog-eyebrow { color: var(--violet); font-size: 13.5px; font-weight: 700; letter-spacing: .16em; padding-bottom: 12px; background: linear-gradient(90deg, #c6afd8, #e0c6ae 70%, transparent) bottom / 100% 1px no-repeat; }
+.post-toc > .blog-eyebrow::before { content: "\2726"; margin-right: 9px; color: var(--violet-soft); letter-spacing: 0; }
 .post-toc ul { padding: 0; list-style: none; margin: 16px 0 0; }
 .post-toc ul ul { padding-left: 12px; margin-top: 6px; }
 .post-toc li { margin: 9px 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
