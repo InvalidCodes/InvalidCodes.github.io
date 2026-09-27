@@ -107,8 +107,11 @@
 .blog-entry h3 a { display: flex; justify-content: space-between; align-items: start; gap: 25px; }
 .entry-arrow { font: 24px/1.5 var(--sans); color: var(--violet-soft); transition: color .2s, transform .2s; }
 .blog-entry h3 a:hover { color: var(--violet); }
-.entry-title > span, .post-toc a, .prose a, .back-link, .mark-text { background: var(--marker) no-repeat 0 0 / 0 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: color .3s, text-decoration-color .3s, background-size .6s cubic-bezier(.2, .8, .2, 1); }
-.blog-entry h3 a:hover .entry-title > span, .post-toc a:hover, .prose a:hover, .back-link:hover, .post-pagination a:hover .mark-text { background-size: 100% 100%; }
+.entry-title > span, .post-toc a, .prose a, .back-link, .mark-text, .blog-nav-links a, .back-top { background: var(--marker) no-repeat 0 0 / 0 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: color .3s, text-decoration-color .3s, background-size .6s cubic-bezier(.2, .8, .2, 1); }
+.blog-entry h3 a:hover .entry-title > span, .post-toc a:hover, .prose a:hover, .back-link:hover, .post-pagination a:hover .mark-text, .blog-nav-links a:hover, .back-top:hover { background-size: 100% 100%; }
+/* Nav links carry vertical padding for their hit area; keep the stroke on the text itself. */
+.blog-nav-links a { background-origin: content-box; background-clip: content-box; }
+.back-top:hover { color: var(--violet) !important; }
 .blog-entry h3 a:hover .entry-arrow { color: var(--violet); transform: translate(3px, -3px); }
 .entry-excerpt { max-width: calc(100% - 56px); color: var(--muted); font-size: 13.5px; line-height: 1.85; margin-bottom: 0; }
 .entry-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-left: 4px; letter-spacing: 0; }
@@ -123,7 +126,7 @@
 .blog-footer p::before { content: "\2726"; margin-right: 10px; color: var(--violet-soft); }
 .back-top { color: var(--subtle) !important; font-size: 11px; white-space: nowrap; }
 /* The homepage borrows the notebook footer; give it the Blog tokens it would otherwise lack. */
-.home-footer { --subtle: #564d61; --violet-soft: #8565a0; }
+.home-footer { --subtle: #564d61; --violet: #573878; --violet-soft: #8565a0; --marker: linear-gradient(transparent 52%, #e2cdf0 52%, #f2d9c5 94%, transparent 94%); }
 .home-footer .back-top { font-family: var(--klee); text-decoration: none; }
 
 /* Article typography, intentionally spacious enough for technical writing. */
@@ -272,7 +275,7 @@
   @keyframes twinkle { 0%, 100% { opacity: .25; scale: .6; } 50% { opacity: .95; scale: 1; } }
   @keyframes cloud-in { from { opacity: 0; } }
 }
-@media (prefers-reduced-motion: reduce) { .home-blog-entry, .entry-arrow, .entry-title > span, .post-toc a, .prose a, .back-link, .mark-text { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .home-blog-entry, .entry-arrow, .entry-title > span, .post-toc a, .prose a, .back-link, .mark-text, .blog-nav-links a, .back-top { transition: none; } }
 @media print {
   .blog-header, .blog-footer, .post-topline, .post-sidebar, .mobile-toc, .post-pagination, .copy-code, .stardust, .blog-site::before, .blog-site::after { display: none; }
   .blog-site { background: white; }
