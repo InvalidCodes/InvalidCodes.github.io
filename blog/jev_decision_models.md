@@ -3,7 +3,7 @@ title: Why Jev Can Make Decisions Faster Than GPT
 subtitle: A beginner friendly guide to state, calibrated decisions, RLCD, and the boundary between Jev and ordinary classifiers
 date: 2026-09-23
 description: Jev answers with typed, calibrated probabilities instead of generated text. This post explains what that interface changes, where Jev sits between small classifiers and GPT, and what RLCD does and does not reveal.
-tags: [Jev, WAM]
+tags: [Jev, LLM]
 lang: en
 ---
 
@@ -178,19 +178,19 @@ f_\theta(x,q,C)\rightarrow P(C\mid x,q).
 
 The task therefore changes at inference time through \(q\) and \(C\). One request can ask about frustration, another about escalation, and another about which of several categories best describes a failure. TypeSafe positions Jev as this general decision primitive for software. [^typesafe-home]
 
-The following comparison captures the distinction compactly. The table is reproduced exactly from the discussion.
+The following comparison captures the distinction compactly.
 
-| 小分类器 Jev GPT             |         |                   |          |
-| ------------------------ | ------- | ----------------- | -------- |
-| 任务                       | 固定      | 动态定义              | 几乎任意     |
-| 输出                       | 固定类别    | 动态 typed decision | 任意字符串    |
-| 是否生成文本                   | 否       | 否                 | 是        |
-| 是否 autoregressive decode | 通常否     | 官方称 parallel      | 是        |
-| 是否需要每任务训练                | 通常需要    | 不需要               | 不需要      |
-| 输出空间                     | 很小      | 有限、动态             | 几乎无限     |
-| 概率                       | softmax | 核心输出              | 通常不是最终接口 |
-| 能否写文章                    | 否       | 否                 | 能        |
-| 延迟                       | 极低      | 很低                | 高        |
+| | Small classifier | Jev | GPT |
+| --- | --- | --- | --- |
+| Task | Fixed | Defined per request | Almost anything |
+| Output | Fixed labels | Dynamic typed decision | Arbitrary string |
+| Generates text | No | No | Yes |
+| Autoregressive decoding | Usually no | Parallel, per TypeSafe | Yes |
+| Training per task | Usually required | Not required | Not required |
+| Output space | Very small | Bounded and dynamic | Nearly unbounded |
+| Probabilities | Softmax output | The core output | Rarely the final interface |
+| Can write an essay | No | No | Yes |
+| Latency | Extremely low | Very low | High |
 
 A useful mental model follows directly from the table:
 
