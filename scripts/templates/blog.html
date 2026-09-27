@@ -12,7 +12,7 @@
     <link rel="canonical" href="{{ site_url }}{{ post.url if post else archive.url }}">
     <link rel="icon" href="/assets/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="/assets/css/typography.css?v=20260926-h2">
-    <link rel="stylesheet" href="/assets/css/blog.css?v=20260926-toc3">
+    <link rel="stylesheet" href="/assets/css/blog.css?v=20260927-marker">
     <link rel="stylesheet" href="/assets/css/blog-code.css">
     <script defer src="/assets/js/blog.js?v=20260926-toc"></script>
     <script defer src="/assets/js/blog-art.js?v=20260926-sky"></script>
@@ -50,9 +50,9 @@
         </article>
       </div>
       <nav class="post-pagination" aria-label="More writing">
-        {% if newer %}<a href="{{ newer.url }}"><span>← Newer entry</span><strong>{{ newer.title }}</strong></a>{% endif %}
-        {% if older %}<a href="{{ older.url }}"><span>Older entry →</span><strong>{{ older.title }}</strong></a>{% endif %}
-        {% if not newer and not older %}<a href="{{ archive.url }}"><span>Back to {{ archive.label }}</span><strong>Every idea starts somewhere. <span aria-hidden="true">↗</span></strong></a>{% endif %}
+        {% if newer %}<a href="{{ newer.url }}"><span>← Newer entry</span><strong><span class="mark-text">{{ newer.title }}</span></strong></a>{% endif %}
+        {% if older %}<a href="{{ older.url }}"><span>Older entry →</span><strong><span class="mark-text">{{ older.title }}</span></strong></a>{% endif %}
+        {% if not newer and not older %}<a href="{{ archive.url }}"><span>Back to {{ archive.label }}</span><strong><span class="mark-text">Every idea starts somewhere.</span> <span aria-hidden="true">↗</span></strong></a>{% endif %}
       </nav>
       </div>
       </div>
