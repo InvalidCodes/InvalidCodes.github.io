@@ -1,13 +1,13 @@
 ---
-title: After the Robot Brain
-subtitle: Why Agentic Robotics Does Not Make VLA Obsolete, and Why Its Role Is Becoming Clearer
+title: What Is a VLA For in Agentic Robotics?
+subtitle: From the Whole Robot Brain to a Steerable Physical Skill Layer, and Why the Interface Between Agent and VLA Now Matters Most
 date: 2026-09-27
 description: Agentic robotics is not replacing vision language action models. It is clarifying their job as the physical intelligence layer that turns intent into reliable action.
 tags: [VLA, Agentic]
 lang: en
 ---
 
-# After the Robot Brain
+# What Is a VLA For in Agentic Robotics?
 
 ## 1. The question sounds like a competition
 
