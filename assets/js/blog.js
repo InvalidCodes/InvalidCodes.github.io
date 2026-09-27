@@ -69,3 +69,64 @@ document.querySelectorAll(".prose pre").forEach((block) => {
   });
   wrapper.append(button);
 });
+
+// Highlight the table-of-contents entry for the section being read.
+const tocLinks = [...document.querySelectorAll(".post-toc a[href^='#']")];
+
+if (tocLinks.length) {
+  const sections = [...new Set(tocLinks.map((link) => decodeURIComponent(link.hash.slice(1))))]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  const sidebar = document.querySelector(".post-sidebar");
+  let current = null;
+  let pending = false;
+
+  const activate = (id) => {
+    if (id === current) return;
+    current = id;
+    tocLinks.forEach((link) => {
+      link.classList.remove("active", "active-parent");
+      link.removeAttribute("aria-current");
+    });
+    if (!id) return;
+    tocLinks.filter((link) => decodeURIComponent(link.hash.slice(1)) === id).forEach((link) => {
+      link.classList.add("active");
+      link.setAttribute("aria-current", "location");
+      // A subsection also marks the section that contains it.
+      link.parentElement.parentElement.closest("li")?.querySelector(":scope > a")?.classList.add("active-parent");
+    });
+    const visible = sidebar && tocLinks.find((link) => link.classList.contains("active") && sidebar.contains(link));
+    if (visible) {
+      const top = visible.offsetTop - sidebar.offsetTop;
+      if (top < sidebar.scrollTop + 40 || top > sidebar.scrollTop + sidebar.clientHeight - 60) {
+        sidebar.scrollTo({ top: top - sidebar.clientHeight / 3, behavior: "smooth" });
+      }
+    }
+  };
+
+  const update = () => {
+    pending = false;
+    const line = Math.min(160, window.innerHeight * 0.3);
+    let id = null;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= line) id = section.id;
+      else break;
+    }
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+      const last = sections[sections.length - 1];
+      if (last.getBoundingClientRect().top < window.innerHeight) id = last.id;
+    }
+    activate(id);
+  };
+
+  const schedule = () => {
+    if (!pending) {
+      pending = true;
+      requestAnimationFrame(update);
+    }
+  };
+
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  update();
+}

@@ -101,7 +101,7 @@
 .entry-topline { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 11px; color: var(--subtle); letter-spacing: .035em; }
 .entry-reading { color: var(--subtle); }
 .entry-reading::before { content: "·"; margin-right: 14px; }
-.blog-entry h3 { font: 550 24px/1.4 var(--sans); letter-spacing: -.3px; margin: 13px 0; }
+.blog-entry h3 { font: 550 24px/1.4 var(--sans); letter-spacing: -.3px; margin: 11px 0 4px; }
 .blog-entry h3 a { display: flex; justify-content: space-between; align-items: start; gap: 25px; }
 .entry-arrow { font: 24px/1.5 var(--sans); color: var(--violet-soft); transition: color .2s, transform .2s; }
 .blog-entry h3 a:hover { color: var(--violet); }
@@ -182,8 +182,10 @@
 .post-toc ul { padding: 0; list-style: none; margin: 16px 0 0; }
 .post-toc ul ul { padding-left: 12px; margin-top: 6px; }
 .post-toc li { margin: 9px 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
-.post-toc a { display: block; }
+.post-toc a { display: inline; background: linear-gradient(transparent 58%, #e9dcf2 58%, #f5e6da 92%, transparent 92%) no-repeat 0 0 / 0 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: color .3s, background-size .6s cubic-bezier(.2, .8, .2, 1); }
 .post-toc a:hover { color: var(--violet); }
+.post-toc a.active { color: var(--violet); background-size: 100% 100%; }
+.post-toc a.active-parent { color: var(--violet); }
 .end-mark { font-size: 27px; color: #9c7fb4; text-align: center; margin: 37px 0; }
 .post-pagination { display: flex; justify-content: space-between; gap: 35px; border-top: 1px solid var(--line); margin: 0 0 70px; padding-top: 25px; }
 .post-pagination a { display: grid; gap: 9px; max-width: 47%; }
@@ -266,7 +268,7 @@
   @keyframes twinkle { 0%, 100% { opacity: .25; scale: .6; } 50% { opacity: .95; scale: 1; } }
   @keyframes cloud-in { from { opacity: 0; } }
 }
-@media (prefers-reduced-motion: reduce) { .home-blog-entry, .entry-arrow { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .home-blog-entry, .entry-arrow, .post-toc a { transition: none; } }
 @media print {
   .blog-header, .blog-footer, .post-topline, .post-sidebar, .mobile-toc, .post-pagination, .copy-code, .stardust, .blog-site::before, .blog-site::after { display: none; }
   .blog-site { background: white; }
