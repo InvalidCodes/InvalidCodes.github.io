@@ -9,13 +9,17 @@ lang: en
 
 # Embodied AI Engineering Interview Handbook
 
-*A fast review guide for embodied AI engineer interviews in VLA and WAM pre-training. The highlighted box under each question is the sentence to say first. The text below it adds only what an interviewer is likely to probe. Formulas appear only where interviewers commonly ask you to write them.*
+*A fast review guide for embodied AI engineer interviews in VLA and WAM pre-training. The highlighted box under each question is the sentence to say first. The text below it adds only what an interviewer is likely to probe. Full formulas appear only where interviewers commonly ask you to write them, and short arrow diagrams show how the pieces connect.*
 
 ## 1. English Edition: VLA Fundamentals
 
 #### Q1. What is the main difference between a VLA and a standard LLM?
 
 > **Core answer:** An LLM predicts language tokens. A VLA maps images, a language instruction, and robot state to executable robot actions.
+
+\[
+\text{Vision + Language + Robot State}\rightarrow\text{Action}
+\]
 
 Inputs usually include one or more RGB cameras, the instruction, and proprioception such as joint angles, end-effector pose, and gripper width. Outputs can be discrete action tokens, continuous actions, or an action chunk. The vision-language backbone brings semantic knowledge from web data, and robot data teaches the model how that knowledge becomes motion.
 
@@ -32,6 +36,10 @@ Images usually go through a pretrained encoder such as SigLIP or DINOv2 and stay
 #### Q3. How does the FAST action tokenizer work, and why does it help?
 
 > **Core answer:** FAST applies a DCT to each action dimension over the chunk, quantizes the coefficients, and compresses them with BPE. This removes the redundancy between neighboring timesteps. [^fast]
+
+\[
+\text{Action Chunk}\rightarrow\text{DCT}\rightarrow\text{Quantize}\rightarrow\text{BPE}\rightarrow\text{Action Tokens}
+\]
 
 At high control frequency, per-step binning produces many highly correlated tokens. Each token carries little new information, and the model learns to copy the previous token. After the DCT, most of the energy sits in a few low-frequency coefficients, so the sequence becomes short and informative. π0-FAST uses this to train an autoregressive VLA on high-frequency dexterous data.
 
@@ -144,6 +152,10 @@ OpenVLA concatenates DINOv2 and SigLIP features for exactly this reason. [^openv
 
 > **Core answer:** An MLP projector maps each visual token into the language model's embedding space and keeps the token count. A Perceiver Resampler uses a fixed set of learnable queries that cross-attend to the visual tokens, so it also compresses them to a fixed number.
 
+\[
+z_i^{vision}\rightarrow\mathrm{MLP}\rightarrow z_i^{LLM}\qquad\qquad Q_{learned}\xrightarrow{\text{cross-attention}}\text{Visual Tokens}
+\]
+
 The MLP keeps the most detail and is the default in LLaVA-style models. The resampler bounds context length and latency but can lose fine spatial detail. Where vision enters the model is a separate choice. Feeding visual tokens only at the input is cheapest, while inserting cross-attention every few layers, as Flamingo does, gives the language model repeated access to vision at a higher cost.
 
 #### Q15. How do you handle token explosion from high-resolution or multi-view images?
@@ -156,17 +168,29 @@ A ViT produces \((H/P)\times(W/P)\) patch tokens, so doubling resolution quadrup
 
 > **Core answer:** Fuse features from several layers and add geometry-aware inputs or supervision.
 
+\[
+F=\mathrm{Fuse}(F_{early},F_{middle},F_{late})
+\]
+
 Early layers keep edges and local position, and late layers keep semantics, so multi-layer fusion keeps both. Auxiliary tasks such as depth, optical flow, segmentation, or keypoint correspondence push the representation to retain geometry. Explicit 3D inputs such as depth maps or point clouds help when precise positioning matters.
 
 #### Q17. How do you fuse multiple cameras?
 
 > **Core answer:** Encode each view, tell the model which camera each token came from, then fuse.
 
+\[
+\text{Camera}_i\rightarrow\text{Encoder}\rightarrow\text{Tokens}_i+\text{Camera Embedding}_i
+\]
+
 The simplest approach adds a learned camera embedding to each view's tokens and concatenates them. Camera intrinsics and extrinsics give the model the true geometric relation between views. A more geometric approach lifts features from all views into a shared 3D or bird's-eye representation before fusion.
 
 #### Q18. How does the model ground language, including "put this on that"?
 
 > **Core answer:** Cross-modal attention links words to image regions, and ambiguous references are resolved with visual context and history.
+
+\[
+\text{red cup}\leftrightarrow\text{image region}\qquad\qquad\text{drawer}\leftrightarrow\text{image region}
+\]
 
 Object-centric features, region features, or segmentation supervision strengthen the link between a phrase such as "red cup" and a specific region. For "this" and "that", the model relies on pointing cues, object tracking, and dialogue history. A deployed system should ask for clarification when several objects remain equally plausible.
 
@@ -176,13 +200,21 @@ Object-centric features, region features, or segmentation supervision strengthen
 
 > **Core answer:** Both usually represent the same physical command. Discrete tokens reuse the language model head and cross-entropy training. Continuous outputs keep full precision and suit diffusion or flow heads.
 
+\[
+\text{Discrete: }a\rightarrow\mathrm{bin}(a)\rightarrow\text{token}\qquad\qquad\text{Continuous: }z\rightarrow\text{Action Head}\rightarrow a
+\]
+
 Discrete tokens add quantization error, and per-step binning adds long autoregressive decoding. A continuous head trained with plain MSE regresses to the conditional mean, which fails when several actions are valid, so continuous VLAs usually pair with diffusion or flow heads. Hierarchical systems mix both, with a discrete skill choice on top and continuous motion below.
 
 #### Q20. Why is plain MSE a problem for multimodal demonstrations?
 
 > **Core answer:** MSE learns the average of all valid actions, and the average of two valid actions can be invalid.
 
-If half the demonstrations pass an obstacle on the left and half on the right, MSE predicts a path through the middle and collides. Generative heads such as diffusion, flow matching, a CVAE, or a discretized distribution put probability on both modes and sample one coherent trajectory.
+\[
+A_{avg}\approx\frac{A_L+A_R}{2}
+\]
+
+If half the demonstrations pass an obstacle on the left, \(A_L\), and half on the right, \(A_R\), MSE predicts their average, a path through the middle that collides. Generative heads such as diffusion, flow matching, a CVAE, or a discretized distribution put probability on both modes and sample one coherent trajectory.
 
 #### Q21. Why are Euler angles a poor learning target, and what should you use?
 
@@ -206,11 +238,19 @@ Autoregressive decoding reuses LLM machinery, but latency grows with the number 
 
 > **Core answer:** An action chunk is a short sequence of future actions predicted together. It reduces compounding error, smooths motion, and cuts how often the model must run.
 
+\[
+o_t\rightarrow a_t\qquad\text{vs.}\qquad o_t\rightarrow[a_t,a_{t+1},\ldots,a_{t+H-1}]
+\]
+
 Executing a whole chunk open loop reacts slowly to surprises, and there are two common fixes. **Receding horizon** predicts \(H\) steps, executes the first few, then replans. **Temporal ensembling**, used by ACT, queries the policy every step and averages all overlapping predictions for the current step with exponential weights. [^act] Chunk length trades smoothness against reactivity.
 
 #### Q24. What is Diffusion Policy?
 
 > **Core answer:** Diffusion Policy represents the policy as a conditional denoising process over an action chunk. It starts from Gaussian noise and iteratively denoises it into an action sequence, conditioned on the observation.
+
+\[
+A^K\sim\mathcal N(0,I)\rightarrow A^{K-1}\rightarrow\cdots\rightarrow A^0
+\]
 
 Its strengths are multimodality, stable training, and smooth chunked output. The paper uses a 1D temporal CNN with FiLM conditioning or a Transformer as the denoiser and executes with receding-horizon control. [^diffusion-policy] Its main cost is the latency of many denoising steps, which is usually reduced with DDIM, fewer steps, or distillation.
 
@@ -226,17 +266,33 @@ With synchronous inference the robot stops while the model thinks. With naive as
 
 > **Core answer:** RT-1 showed that a Transformer trained on large real robot data generalizes across tasks. RT-2 showed that co-fine-tuning a web-scale VLM with robot data transfers web knowledge to control. OpenVLA is an open 7B model in the RT-2 style.
 
+\[
+\text{Visual Tokens + Language Tokens}\rightarrow\text{LLM}\rightarrow\text{Action Tokens}
+\]
+
 RT-1 uses an EfficientNet image encoder with token compression and outputs discretized actions. [^rt1] RT-2 writes actions as text-like tokens and trains on web vision-language data together with robot trajectories. [^rt2] OpenVLA uses Llama 2 with fused DINOv2 and SigLIP features, is trained on about `970k` Open X-Embodiment trajectories, and supports LoRA fine-tuning. [^openvla]
 
 #### Q27. What is Octo, and what is cross-embodiment learning?
 
 > **Core answer:** Octo is a generalist Transformer policy pretrained on 800k Open X-Embodiment trajectories and built to be fine-tuned to new robots, sensors, and action spaces. Cross-embodiment learning trains one model on data from many different robots so that they share skills. [^octo]
 
+\[
+\text{Many Tasks + Many Embodiments}\rightarrow\text{Reusable Policy Initialization}
+\]
+
+\[
+\text{Shared Representation}\rightarrow\text{Robot-Specific Adapter}\rightarrow\text{Robot Action}
+\]
+
 Robots differ in DoF, kinematics, camera placement, gripper, and control frequency. The usual recipe keeps a shared backbone and adds embodiment-specific input and output layers, or maps every robot into a common action space such as end-effector deltas with padding. Octo uses a diffusion action head, and Open X-Embodiment provides the pooled multi-robot data. [^oxe]
 
 #### Q28. What is the architecture of π0?
 
 > **Core answer:** π0 combines a pretrained VLM with a separate action expert that generates continuous action chunks by flow matching. [^pi0]
+
+\[
+\text{VLM Prefix (images + text)}\rightarrow\text{Action Expert (state + noisy actions)}\xrightarrow{\text{10 flow steps}}\text{Action Chunk}
+\]
 
 The VLM, a `3B` PaliGemma, processes images and language. A smaller action expert of about `300M` parameters takes the robot state and noisy actions and attends to the VLM's tokens inside the same Transformer. The attention mask is blockwise causal.
 
@@ -264,6 +320,10 @@ Robot data is narrow, with few objects, few scenes, and short templated instruct
 
 > **Core answer:** A slow VLM, often called System 2, interprets the scene and instruction. A fast action module, often called System 1, generates motor commands at high frequency. [^gr00t]
 
+\[
+\text{VLM (slow)}\rightarrow\text{Latent Plan}\rightarrow\text{DiT Action Head (fast)}\rightarrow\text{Motor Commands}
+\]
+
 In GR00T N1 the VLM's representations feed a diffusion Transformer action head through cross-attention, and the head is trained with flow matching. Training mixes real robot data, synthetic data, and human videos whose missing actions are filled with latent actions or inverse dynamics pseudo-labels. The design separates semantic reasoning, which can run slowly, from reactive control, which must run fast.
 
 ## 6. English Edition: World Models and WAM Pre-Training
@@ -282,11 +342,19 @@ Three families come up in interviews.
 
 > **Core answer:** A world action model learns future world states and robot actions jointly, usually in one backbone. A standard VLA learns only the mapping from observation to action.
 
+\[
+z_t\rightarrow\text{Shared World Backbone}\rightarrow\begin{cases}\text{Future State}\\\text{Robot Action}\end{cases}
+\]
+
 A VLA inherits its prior from a vision-language model, which knows what things are. A WAM usually inherits its prior from a video model, which knows how things move and interact. Future prediction gives dense supervision on every pixel or latent, while action labels are sparse and expensive. OpenWAM frames WAM design as choices about representation, backbone, information flow, inference procedure, and data. [^openwam]
 
 #### Q34. Why should video pre-training help robot actions?
 
 > **Core answer:** Video is abundant and shows physics, object interaction, and cause and effect. A policy needs exactly this knowledge, and robot data alone cannot supply it at scale.
+
+\[
+\text{Unlabeled Video}\rightarrow\text{Dynamics-Aware Representation}\xrightarrow{\text{a little robot data}}\text{Action}
+\]
 
 Predicting the future forces the model to encode object positions, contacts, and motion, not just categories. Human and robot videos without action labels still count as training data. The action head then needs far less robot data to learn how to act on that representation. The main risk is that video prediction also spends capacity on texture and lighting, which do not matter for control.
 
@@ -329,6 +397,10 @@ A reconstruction objective rewards texture and lighting as much as object pose. 
 #### Q39. How do you use video that has no action labels?
 
 > **Core answer:** Either infer pseudo-actions with an inverse dynamics model or learn latent actions directly from frame changes.
+
+\[
+(o_t,\,o_{t+1})\rightarrow\text{IDM}\rightarrow\hat a_t
+\]
 
 - **Inverse dynamics pseudo-labels:** Train an IDM on a small labeled set to predict the action between two frames, then label a large unlabeled corpus. VPT did this for Minecraft. [^vpt]
 - **Latent actions:** Train a model to explain the change from frame \(t\) to frame \(t+1\) with a small discrete code. Genie and LAPA pretrain on these latent actions, then learn a mapping to real robot actions from a little labeled data. [^genie] [^lapa]
@@ -447,6 +519,10 @@ In smooth demonstrations the next action is very close to the current state, so 
 
 > **Core answer:** It means connecting what a pretrained model knows about scenes and language to the specific motor commands of one robot.
 
+\[
+\text{Visual-Language Representation}\rightarrow\text{Executable Robot Action}
+\]
+
 The options run from light to heavy. Freeze the backbone and train only an action head. Train LoRA or adapters together with the head. Fine-tune the whole model on action tokens. Attach a diffusion or flow action expert to the backbone. Or pretrain on video to learn dynamics first and then learn the action mapping from robot data. Lighter options need less data but transfer less.
 
 #### Q55. Should failed trajectories be kept?
@@ -458,6 +534,10 @@ Behavior cloning copies whatever it sees, so failed actions teach failure. Failu
 #### Q56. What is the Sim2Real gap, and how do you close it?
 
 > **Core answer:** Simulation and reality differ in appearance, dynamics, and sensing. You close the gap by widening the simulated distribution, learning representations that ignore irrelevant differences, and adapting with real data.
+
+\[
+P_{sim}(o,a,s')\neq P_{real}(o,a,s')
+\]
 
 Visual gaps come from texture, lighting, and cameras. Dynamics gaps come from friction, mass, actuator response, and latency. Sensor gaps come from noise and calibration. The main tools are domain randomization, system identification to match the simulator to the real robot, co-training on simulated and real data, and online adaptation of a latent dynamics estimate.
 
@@ -495,6 +575,10 @@ The advantage is the reward minus the group mean, divided by the group standard 
 
 > **Core answer:** PPO is on-policy and discards old data. SAC and TD3 are off-policy and reuse old data from a replay buffer. Offline RL learns only from a fixed dataset with no new interaction.
 
+\[
+\text{Environment}\rightarrow\text{Replay Buffer}\rightarrow\text{Training}\rightarrow\text{Environment}
+\]
+
 | Method | Data | Policy | Key idea |
 |---|---|---|---|
 | PPO | Fresh on-policy batches | Stochastic | Clipped ratio keeps updates small [^ppo] |
@@ -524,6 +608,10 @@ A binary success detector trained on a few hundred labeled images is the most co
 #### Q63. How do you connect a 3 Hz VLA to a controller running at 50 Hz or faster?
 
 > **Core answer:** Use a hierarchy. The VLA outputs a chunk or target at low frequency, and a low-level controller tracks it at high frequency with feedback.
+
+\[
+\text{VLA}\rightarrow\text{Target or Trajectory}\rightarrow\text{OSC, MPC, or Impedance Controller}\rightarrow\text{Motor Command}
+\]
 
 ```text
 VLA               3 to 10 Hz       images + instruction  ->  action chunk or target pose
@@ -558,6 +646,10 @@ Use fewer visual tokens, cache the observation prefix, cut flow or diffusion ste
 #### Q67. How do ONNX, TensorRT, and Triton differ?
 
 > **Core answer:** ONNX is a model exchange format, TensorRT is NVIDIA's optimizing inference engine, and Triton is a serving system.
+
+\[
+\text{PyTorch}\rightarrow\text{ONNX}\rightarrow\text{TensorRT}\rightarrow\text{Triton Serving}
+\]
 
 TensorRT fuses layers, selects kernels, and runs in FP16 or INT8. Triton handles requests, dynamic batching, concurrency, and multiple models. A typical path exports a PyTorch model to ONNX, builds a TensorRT engine, and serves it with Triton.
 
@@ -610,6 +702,10 @@ Map the cameras and proprioception into the input format the model expects. Pred
 
 > **Core answer:** Split it into subtasks, let a high-level planner choose the next subtask, and let a low-level policy execute it while progress is checked.
 
+\[
+\text{Locate}\rightarrow\text{Open}\rightarrow\text{Grasp}\rightarrow\text{Place}
+\]
+
 The planner can be a separate VLM or the VLA itself predicting a language subtask, as in π0.5. [^pi05] Add success detection after each subtask, with retry or recovery behavior on failure. Memory of past steps matters when the current image does not reveal task progress.
 
 #### Q75. You are asked to design a WAM pre-training project from scratch. What is your plan?
@@ -640,7 +736,11 @@ When a question looks unfamiliar, first place it in one of five layers, then ans
 | Control | How is the action executed stably? | Controllers, frequency, smoothing |
 | Learning and deployment | How is the system trained, evaluated, and served? | Data, pre-training, RL, Sim2Real, inference |
 
-> The whole system reads as perception, then representation, then action, then control, with training and deployment supporting every layer.
+\[
+\boxed{\text{Perception}\rightarrow\text{Representation}\rightarrow\text{Reasoning}\rightarrow\text{Action}\rightarrow\text{Control}}
+\]
+
+Training, adaptation, and deployment determine how each layer becomes usable on a real robot.
 
 *本部分与英文版编号一一对应。每题下方的高亮框就是面试时应该先说出口的结论，后面只补面试官最可能追问的细节。*
 
@@ -649,6 +749,10 @@ When a question looks unfamiliar, first place it in one of five layers, then ans
 #### Q1. VLA 和普通 LLM 的核心区别是什么？
 
 > **核心回答：** LLM 预测语言 token，VLA 把图像、语言指令和机器人状态映射成可执行的机器人动作。
+
+\[
+\text{Vision + Language + Robot State}\rightarrow\text{Action}
+\]
 
 输入通常包括一个或多个 RGB 相机、语言指令，以及关节角、末端位姿、夹爪开合等 proprioception。输出可以是离散 action token、连续动作或 action chunk。视觉语言 backbone 带来 web 数据里的语义知识，机器人数据负责教模型把这些知识变成动作。
 
@@ -665,6 +769,10 @@ When a question looks unfamiliar, first place it in one of five layers, then ans
 #### Q3. FAST tokenizer 怎么做？为什么有用？
 
 > **核心回答：** FAST 对 chunk 内每个动作维度做 DCT，把系数量化后再用 BPE 压缩，从而去掉相邻时间步之间的冗余。 [^fast]
+
+\[
+\text{Action Chunk}\rightarrow\text{DCT}\rightarrow\text{Quantize}\rightarrow\text{BPE}\rightarrow\text{Action Tokens}
+\]
 
 控制频率很高时，逐步 binning 会产生大量高度相关的 token。每个 token 带来的新信息很少，模型容易学成“复制上一个 token”。做完 DCT 后，大部分能量集中在少数低频系数上，序列变短，信息密度变高。π0-FAST 就靠它在高频灵巧操作数据上训练自回归 VLA。
 
@@ -777,6 +885,10 @@ OpenVLA 正是因此把 DINOv2 和 SigLIP 特征拼接起来。 [^openvla]
 
 > **核心回答：** MLP projector 只把每个视觉 token 映射到语言模型的 embedding 空间，token 数不变。Perceiver Resampler 用固定数量的可学习 query 对视觉 token 做 cross-attention，所以还能把 token 压缩到固定数量。
 
+\[
+z_i^{vision}\rightarrow\mathrm{MLP}\rightarrow z_i^{LLM}\qquad\qquad Q_{learned}\xrightarrow{\text{cross-attention}}\text{Visual Tokens}
+\]
+
 MLP 保留的细节最多，是 LLaVA 类模型的默认做法。Resampler 能限制上下文长度和延迟，但可能丢掉精细的空间信息。视觉信息从哪里进入模型是另一个选择。只在输入端拼接视觉 token 最便宜，像 Flamingo 那样每隔几层插入 cross-attention，能让语言模型反复访问视觉信息，代价也更高。
 
 #### Q15. 高分辨率或多视角带来 token 爆炸怎么办？
@@ -789,17 +901,29 @@ ViT 会产生 \((H/P)\times(W/P)\) 个 patch token，分辨率翻倍 token 数�
 
 > **核心回答：** 融合多层特征，并加入几何相关的输入或监督。
 
+\[
+F=\mathrm{Fuse}(F_{early},F_{middle},F_{late})
+\]
+
 浅层保留边缘和局部位置，深层保留语义，多层融合可以两者兼得。深度、光流、分割、关键点对应等辅助任务会逼表征保留几何信息。需要精确定位时，深度图或点云这类显式 3D 输入也很有帮助。
 
 #### Q17. 多相机怎么融合？
 
 > **核心回答：** 每个视角分别编码，告诉模型每个 token 来自哪台相机，再做融合。
 
+\[
+\text{Camera}_i\rightarrow\text{Encoder}\rightarrow\text{Tokens}_i+\text{Camera Embedding}_i
+\]
+
 最简单的做法是给每个视角的 token 加一个可学习的 camera embedding 再拼接。相机内外参能给模型提供视角之间真实的几何关系。更几何化的做法是先把所有视角的特征提升到统一的 3D 或 BEV 表示里再融合。
 
 #### Q18. 模型怎么做语言 grounding，包括“把这个放到那个上面”这种指代？
 
 > **核心回答：** 跨模态 attention 把词和图像区域联系起来，指代歧义靠视觉上下文和历史信息消解。
+
+\[
+\text{red cup}\leftrightarrow\text{image region}\qquad\qquad\text{drawer}\leftrightarrow\text{image region}
+\]
 
 Object-centric 特征、区域特征或分割监督能加强“红色杯子”这类短语和具体区域之间的对应。遇到“这个”“那个”时，模型要依靠指向线索、目标跟踪和对话历史。部署时如果多个物体同样合理，系统应该主动请用户澄清。
 
@@ -809,13 +933,21 @@ Object-centric 特征、区域特征或分割监督能加强“红色杯子”�
 
 > **核心回答：** 两者通常表示的是同一个物理指令。离散 token 可以复用语言模型的输出头和交叉熵训练，连续输出保留完整精度，适合接 Diffusion 或 Flow 头。
 
+\[
+\text{Discrete: }a\rightarrow\mathrm{bin}(a)\rightarrow\text{token}\qquad\qquad\text{Continuous: }z\rightarrow\text{Action Head}\rightarrow a
+\]
+
 离散 token 会引入量化误差，逐步 binning 还会带来很长的自回归解码。连续头如果只用 MSE 训练，会回归到条件均值，多个动作都正确时就会出错，所以连续 VLA 一般配 Diffusion 或 Flow 头。分层系统可以两者混用，上层离散地选 skill，下层连续地出轨迹。
 
 #### Q20. 为什么多峰示教数据不能直接用 MSE？
 
 > **核心回答：** MSE 学到的是所有正确动作的平均值，而两个正确动作的平均值可能是错的。
 
-如果一半示教从左边绕开障碍物，一半从右边绕，MSE 会预测从中间穿过去，直接撞上。Diffusion、Flow Matching、CVAE 或离散化分布这类生成式头能给两个 mode 都分配概率，再采样出一条完整一致的轨迹。
+\[
+A_{avg}\approx\frac{A_L+A_R}{2}
+\]
+
+如果一半示教从左边绕开障碍物，记作 \(A_L\)，一半从右边绕，记作 \(A_R\)，MSE 会预测两者的平均，也就是从中间穿过去，直接撞上。Diffusion、Flow Matching、CVAE 或离散化分布这类生成式头能给两个 mode 都分配概率，再采样出一条完整一致的轨迹。
 
 #### Q21. 为什么欧拉角不适合做学习目标？该用什么？
 
@@ -839,11 +971,19 @@ Object-centric 特征、区域特征或分割监督能加强“红色杯子”�
 
 > **核心回答：** Action chunk 是一次预测出来的一小段未来动作。它能减少误差累积，让动作更平滑，也降低模型的调用频率。
 
+\[
+o_t\rightarrow a_t\qquad\text{vs.}\qquad o_t\rightarrow[a_t,a_{t+1},\ldots,a_{t+H-1}]
+\]
+
 整段开环执行对意外反应很慢，常见解决办法有两个。**Receding horizon** 预测 \(H\) 步，只执行前几步就重新规划。**Temporal ensembling** 是 ACT 的做法，每一步都调用 policy，把所有覆盖当前时刻的预测按指数权重平均。 [^act] chunk 长度是在平滑性和反应速度之间做权衡。
 
 #### Q24. Diffusion Policy 是什么？
 
 > **核心回答：** Diffusion Policy 把 policy 表示成对 action chunk 的条件去噪过程，从高斯噪声出发，以观测为条件逐步去噪成动作序列。
+
+\[
+A^K\sim\mathcal N(0,I)\rightarrow A^{K-1}\rightarrow\cdots\rightarrow A^0
+\]
 
 它的优点是能表达多峰分布、训练稳定、输出的 chunk 平滑。原论文的去噪网络是带 FiLM 条件的 1D 时序 CNN 或 Transformer，并配合 receding horizon 执行。 [^diffusion-policy] 主要代价是多步去噪带来的推理延迟，通常用 DDIM、减少步数或蒸馏来缓解。
 
@@ -859,17 +999,33 @@ Object-centric 特征、区域特征或分割监督能加强“红色杯子”�
 
 > **核心回答：** RT-1 证明了在大规模真实机器人数据上训练的 Transformer 能跨任务泛化。RT-2 证明了把 web 规模 VLM 和机器人数据一起 co-fine-tune，可以把 web 知识迁移到控制上。OpenVLA 是 RT-2 路线的 7B 开源模型。
 
+\[
+\text{Visual Tokens + Language Tokens}\rightarrow\text{LLM}\rightarrow\text{Action Tokens}
+\]
+
 RT-1 用 EfficientNet 图像编码器加 token 压缩，输出离散化动作。 [^rt1] RT-2 把动作写成类似文本的 token，在 web 视觉语言数据和机器人轨迹上联合训练。 [^rt2] OpenVLA 基于 Llama 2，融合 DINOv2 和 SigLIP 特征，在约 `97 万` 条 Open X-Embodiment 轨迹上训练，支持 LoRA 微调。 [^openvla]
 
 #### Q27. Octo 是什么？什么是 cross-embodiment 学习？
 
 > **核心回答：** Octo 是在 80 万条 Open X-Embodiment 轨迹上预训练的通用 Transformer policy，设计目标是方便微调到新的机器人、传感器和动作空间。Cross-embodiment 学习就是用多种机器人的数据训练同一个模型，让它们共享技能。 [^octo]
 
+\[
+\text{Many Tasks + Many Embodiments}\rightarrow\text{Reusable Policy Initialization}
+\]
+
+\[
+\text{Shared Representation}\rightarrow\text{Robot-Specific Adapter}\rightarrow\text{Robot Action}
+\]
+
 不同机器人在自由度、运动学、相机位置、夹爪和控制频率上都不一样。常见做法是共享 backbone，再给每种本体配专属的输入输出层，或者把所有机器人映射到末端增量这类公共动作空间并做 padding。Octo 使用 diffusion 动作头，Open X-Embodiment 提供了汇总的多机器人数据。 [^oxe]
 
 #### Q28. π0 的架构是什么？
 
 > **核心回答：** π0 把预训练 VLM 和一个独立的 action expert 结合起来，action expert 用 flow matching 生成连续的 action chunk。 [^pi0]
+
+\[
+\text{VLM Prefix (images + text)}\rightarrow\text{Action Expert (state + noisy actions)}\xrightarrow{\text{10 flow steps}}\text{Action Chunk}
+\]
 
 VLM 是 `3B` 的 PaliGemma，负责处理图像和语言。更小的 action expert 约 `300M` 参数，接收机器人状态和加噪动作，在同一个 Transformer 里 attend 到 VLM 的 token。attention mask 是分块因果的。
 
@@ -897,6 +1053,10 @@ VLM 是 `3B` 的 PaliGemma，负责处理图像和语言。更小的 action expe
 
 > **核心回答：** 慢速的 VLM 常被称为 System 2，负责理解场景和指令。快速的动作模块常被称为 System 1，负责高频生成电机指令。 [^gr00t]
 
+\[
+\text{VLM (slow)}\rightarrow\text{Latent Plan}\rightarrow\text{DiT Action Head (fast)}\rightarrow\text{Motor Commands}
+\]
+
 GR00T N1 里 VLM 输出的表征通过 cross-attention 送进 diffusion Transformer 动作头，动作头用 flow matching 训练。训练数据混合了真实机器人数据、合成数据和人类视频，视频缺失的动作用 latent action 或逆动力学伪标签补上。这种设计把可以慢一点的语义推理和必须很快的反应式控制分开。
 
 ## 19. 中文版：World Model 与 WAM 预训练
@@ -915,11 +1075,19 @@ GR00T N1 里 VLM 输出的表征通过 cross-attention 送进 diffusion Transfor
 
 > **核心回答：** World action model 通常在同一个 backbone 里联合学习未来世界状态和机器人动作。普通 VLA 只学从观测到动作的映射。
 
+\[
+z_t\rightarrow\text{Shared World Backbone}\rightarrow\begin{cases}\text{Future State}\\\text{Robot Action}\end{cases}
+\]
+
 VLA 的先验来自视觉语言模型，知道东西“是什么”。WAM 的先验通常来自视频模型，知道东西“怎么动、怎么相互作用”。预测未来在每个像素或 latent 上都有稠密监督，而动作标签稀疏又昂贵。OpenWAM 把 WAM 设计拆成表征、backbone、信息流、推理流程和数据几个选择。 [^openwam]
 
 #### Q34. 为什么视频预训练能帮助机器人动作？
 
 > **核心回答：** 视频数量巨大，里面有物理规律、物体交互和因果关系。这正是 policy 需要、而仅靠机器人数据无法大规模获得的知识。
+
+\[
+\text{Unlabeled Video}\rightarrow\text{Dynamics-Aware Representation}\xrightarrow{\text{a little robot data}}\text{Action}
+\]
 
 预测未来会逼模型编码物体位置、接触和运动，而不只是类别。没有动作标签的人类视频和机器人视频也能用上。之后动作头只需要少得多的机器人数据，就能学会基于这种表征去行动。主要风险是视频预测也会把容量花在纹理、光照这类和控制无关的细节上。
 
@@ -962,6 +1130,10 @@ UVA 就是用 mask 把这几种角色放在一起训练的。 [^uva]
 #### Q39. 没有动作标签的视频怎么用？
 
 > **核心回答：** 要么用逆动力学模型推断伪动作，要么直接从画面变化中学 latent action。
+
+\[
+(o_t,\,o_{t+1})\rightarrow\text{IDM}\rightarrow\hat a_t
+\]
 
 - **逆动力学伪标签：** 先在少量有标注数据上训练 IDM，预测两帧之间的动作，再给大量无标注视频打标签。VPT 在 Minecraft 上就是这么做的。 [^vpt]
 - **Latent action：** 训练一个模型，用很小的离散 code 解释第 \(t\) 帧到第 \(t+1\) 帧的变化。Genie 和 LAPA 先在这种 latent action 上预训练，再用少量有标注数据学到真实机器人动作的映射。 [^genie] [^lapa]
@@ -1080,6 +1252,10 @@ ALOHA 这类主从臂能为双臂任务提供精确的关节空间数据。 [^ac
 
 > **核心回答：** 就是把预训练模型对场景和语言的理解，连接到某一台机器人具体的电机指令上。
 
+\[
+\text{Visual-Language Representation}\rightarrow\text{Executable Robot Action}
+\]
+
 做法从轻到重依次是冻结 backbone 只训动作头、训练 LoRA 或 adapter 加动作头、在 action token 上全量微调、给 backbone 接一个 diffusion 或 flow action expert，以及先用视频预训练学动力学再用机器人数据学动作映射。越轻的方法需要的数据越少，能迁移的也越少。
 
 #### Q55. 失败轨迹要不要保留？
@@ -1091,6 +1267,10 @@ ALOHA 这类主从臂能为双臂任务提供精确的关节空间数据。 [^ac
 #### Q56. Sim2Real gap 是什么？怎么缩小？
 
 > **核心回答：** 仿真和真实世界在外观、动力学和传感上都有差异。缩小的办法是扩大仿真分布、学习忽略无关差异的表征，再用真实数据适配。
+
+\[
+P_{sim}(o,a,s')\neq P_{real}(o,a,s')
+\]
 
 视觉差异来自纹理、光照和相机，动力学差异来自摩擦、质量、执行器响应和延迟，传感差异来自噪声和标定。主要工具有 domain randomization、用系统辨识让仿真贴近真实机器人、仿真和真实数据联合训练，以及在线适配隐式的动力学估计。
 
@@ -1128,6 +1308,10 @@ Advantage 就是奖励减去组内均值再除以组内标准差，同时保留 
 
 > **核心回答：** PPO 是 on-policy，旧数据用完就丢。SAC 和 TD3 是 off-policy，从 replay buffer 里反复利用旧数据。Offline RL 只从固定数据集学习，不再和环境交互。
 
+\[
+\text{Environment}\rightarrow\text{Replay Buffer}\rightarrow\text{Training}\rightarrow\text{Environment}
+\]
+
 | 方法 | 数据 | 策略 | 关键思想 |
 |---|---|---|---|
 | PPO | 新鲜的 on-policy 数据 | 随机 | clip 概率比，限制更新幅度 [^ppo] |
@@ -1157,6 +1341,10 @@ Replay buffer 存储由状态、动作、奖励和下一状态组成的 transiti
 #### Q63. 3 Hz 的 VLA 怎么驱动 50 Hz 甚至更高频的控制器？
 
 > **核心回答：** 用分层结构。VLA 低频输出 chunk 或目标，底层控制器高频地带反馈跟踪。
+
+\[
+\text{VLA}\rightarrow\text{Target or Trajectory}\rightarrow\text{OSC, MPC, or Impedance Controller}\rightarrow\text{Motor Command}
+\]
 
 ```text
 VLA          3 到 10 Hz       图像 + 指令        ->  action chunk 或目标位姿
@@ -1191,6 +1379,10 @@ VLA 负责语义和短时规划，控制器负责稳定性和接触安全。Chun
 #### Q67. ONNX、TensorRT、Triton 怎么区分？
 
 > **核心回答：** ONNX 是模型交换格式，TensorRT 是 NVIDIA 的推理优化引擎，Triton 是服务化系统。
+
+\[
+\text{PyTorch}\rightarrow\text{ONNX}\rightarrow\text{TensorRT}\rightarrow\text{Triton Serving}
+\]
 
 TensorRT 负责层融合、kernel 选择以及 FP16 或 INT8 执行。Triton 负责请求处理、动态 batching、并发和多模型管理。典型流程是把 PyTorch 模型导出成 ONNX，构建 TensorRT engine，再用 Triton 对外提供服务。
 
@@ -1243,6 +1435,10 @@ TensorRT 负责层融合、kernel 选择以及 FP16 或 INT8 执行。Triton 负
 
 > **核心回答：** 拆成子任务，由高层规划器选择下一个子任务，底层 policy 负责执行，同时检查进度。
 
+\[
+\text{Locate}\rightarrow\text{Open}\rightarrow\text{Grasp}\rightarrow\text{Place}
+\]
+
 规划器可以是单独的 VLM，也可以像 π0.5 那样由 VLA 自己预测语言子任务。 [^pi05] 每个子任务结束后做成功检测，失败时重试或执行恢复动作。当前画面看不出任务进度时，记住之前的步骤就很重要。
 
 #### Q75. 让你从零设计一个 WAM 预训练项目，你怎么规划？
@@ -1273,7 +1469,11 @@ TensorRT 负责层融合、kernel 选择以及 FP16 或 INT8 执行。Triton 负
 | 控制 | 动作怎么稳定执行？ | 控制器、频率、平滑 |
 | 学习与部署 | 系统怎么训练、评估和上线？ | 数据、预训练、RL、Sim2Real、推理 |
 
-> 整条链路就是感知、表征、动作、控制，训练和部署支撑着每一层。
+\[
+\boxed{\text{Perception}\rightarrow\text{Representation}\rightarrow\text{Reasoning}\rightarrow\text{Action}\rightarrow\text{Control}}
+\]
+
+训练、适配和部署决定了每一层能否在真实机器人上落地。
 
 ## References and version notes
 
