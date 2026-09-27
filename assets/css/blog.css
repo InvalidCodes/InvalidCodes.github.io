@@ -120,6 +120,9 @@
 .blog-footer p { color: var(--subtle); font: 600 14px var(--klee); margin: 0; }
 .blog-footer p::before { content: "\2726"; margin-right: 10px; color: var(--violet-soft); }
 .back-top { color: var(--subtle) !important; font-size: 11px; white-space: nowrap; }
+/* The homepage borrows the notebook footer; give it the Blog tokens it would otherwise lack. */
+.home-footer { --subtle: #564d61; --violet-soft: #8565a0; }
+.home-footer .back-top { font-family: var(--klee); text-decoration: none; }
 
 /* Article typography, intentionally spacious enough for technical writing. */
 .post-shell { display: grid; grid-template-columns: minmax(250px, 280px) minmax(0, 1fr); gap: 52px; align-items: start; padding-top: 40px; }
