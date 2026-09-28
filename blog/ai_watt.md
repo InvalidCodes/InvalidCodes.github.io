@@ -3,7 +3,7 @@ title: "The Watt Moment in AI"
 subtitle: "Three signals that power is becoming a first class scaling resource"
 date: 2026-08-28
 description: "A concise explanation of why performance per watt, direct power procurement, and time to power are becoming central to AI infrastructure scaling."
-tags: ["Infrastructure", "Energy"]
+tags: ["Infra", "Energy"]
 lang: en
 ---
 
