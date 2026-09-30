@@ -437,7 +437,8 @@ li {
 
 .publication-filters {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .publication-filters[hidden],
@@ -446,23 +447,32 @@ li {
 }
 
 .publication-filters button {
-  padding: 6px 0;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  cursor: pointer;
-}
-
-.publication-filters button:hover,
-.publication-filters button[aria-pressed="true"] {
+  min-height: 34px;
+  padding: 5px 14px;
+  border: 1.5px solid rgba(78, 42, 132, 0.2);
+  border-radius: 999px;
+  background: rgba(78, 42, 132, 0.055);
   color: var(--accent-dark);
+  font: inherit;
+  font-weight: 650;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.publication-filters button:hover {
+  background: rgba(78, 42, 132, 0.1);
+  border-color: rgba(78, 42, 132, 0.35);
 }
 
 .publication-filters button[aria-pressed="true"] {
-  border-bottom-color: currentColor;
-  font-weight: 650;
+  background: rgba(78, 42, 132, 0.14);
+  border-color: rgba(78, 42, 132, 0.45);
+}
+
+.publication-filters button:focus-visible {
+  outline: 3px solid rgba(78, 42, 132, 0.25);
+  outline-offset: 3px;
 }
 
 .work-list {
