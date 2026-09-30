@@ -48,3 +48,32 @@ const observer = new IntersectionObserver(
 );
 
 sections.forEach((section) => observer.observe(section));
+
+const publicationList = document.querySelector("#publication-list");
+const publicationFilters = document.querySelector(".publication-filters");
+
+if (publicationList && publicationFilters) {
+  // Preserve the original date order independently of subsequent DOM reordering.
+  const byDate = Array.from(publicationList.children);
+  const selected = byDate
+    .filter((paper) => paper.hasAttribute("data-selected-rank"))
+    .sort((a, b) => Number(a.dataset.selectedRank) - Number(b.dataset.selectedRank));
+  const buttons = Array.from(publicationFilters.querySelectorAll("button"));
+
+  const setPublicationView = (view) => {
+    const isSelected = view === "selected";
+    byDate.forEach((paper) => {
+      paper.hidden = isSelected && !paper.hasAttribute("data-selected-rank");
+    });
+    (isSelected ? selected : byDate).forEach((paper) => publicationList.append(paper));
+    buttons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.publicationView === view));
+    });
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => setPublicationView(button.dataset.publicationView));
+  });
+  setPublicationView("selected");
+  publicationFilters.hidden = false;
+}

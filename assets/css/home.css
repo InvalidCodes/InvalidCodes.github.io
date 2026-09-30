@@ -423,6 +423,48 @@ li {
   border-radius: 8px;
 }
 
+.publications-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 22px;
+  margin-bottom: 16px;
+}
+
+.publications-heading h2 {
+  margin: 0;
+}
+
+.publication-filters {
+  display: flex;
+  gap: 16px;
+}
+
+.publication-filters[hidden],
+.work-item[hidden] {
+  display: none;
+}
+
+.publication-filters button {
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.publication-filters button:hover,
+.publication-filters button[aria-pressed="true"] {
+  color: var(--accent-dark);
+}
+
+.publication-filters button[aria-pressed="true"] {
+  border-bottom-color: currentColor;
+  font-weight: 650;
+}
+
 .work-list {
   display: grid;
   gap: 20px;
