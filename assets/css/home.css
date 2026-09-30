@@ -447,15 +447,18 @@ li {
 }
 
 .publication-filters button {
-  min-height: 34px;
-  padding: 5px 14px;
-  border: 1.5px solid rgba(78, 42, 132, 0.2);
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 3px 8px;
+  border: 1px solid rgba(78, 42, 132, 0.2);
   border-radius: 999px;
   background: rgba(78, 42, 132, 0.055);
   color: var(--accent-dark);
   font: inherit;
+  font-size: 0.75rem;
   font-weight: 650;
-  line-height: 1.4;
+  line-height: 1.6;
   cursor: pointer;
   transition: background-color 160ms ease, border-color 160ms ease;
 }
