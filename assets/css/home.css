@@ -404,6 +404,10 @@ li {
   font-family: var(--klee);
 }
 
+.news-highlight {
+  color: var(--accent);
+}
+
 .interest-grid,
 .two-column {
   display: grid;
