@@ -382,9 +382,18 @@ li {
 }
 
 .news-list {
+  position: relative;
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* home.js caps the height at the first five items once there are more. */
+.news-list.is-scrollable {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+  scrollbar-width: thin;
 }
 
 .news-list li {

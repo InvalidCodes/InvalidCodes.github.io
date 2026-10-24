@@ -77,3 +77,27 @@ if (publicationList && publicationFilters) {
   setPublicationView("selected");
   publicationFilters.hidden = false;
 }
+
+const newsList = document.querySelector(".news-list");
+const NEWS_VISIBLE = 5;
+
+if (newsList) {
+  // Show the latest five items; older ones stay reachable by scrolling the list.
+  const fitNews = () => {
+    const items = newsList.children;
+    const isScrollable = items.length > NEWS_VISIBLE;
+    newsList.classList.toggle("is-scrollable", isScrollable);
+    if (isScrollable) {
+      const last = items[NEWS_VISIBLE - 1];
+      newsList.style.maxHeight = `${last.offsetTop + last.offsetHeight}px`;
+      newsList.tabIndex = 0;
+    } else {
+      newsList.style.removeProperty("max-height");
+      newsList.removeAttribute("tabindex");
+    }
+  };
+
+  fitNews();
+  window.addEventListener("resize", fitNews);
+  document.fonts?.ready.then(fitNews);
+}
