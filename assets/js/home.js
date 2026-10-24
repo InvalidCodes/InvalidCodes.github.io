@@ -79,25 +79,49 @@ if (publicationList && publicationFilters) {
 }
 
 const newsList = document.querySelector(".news-list");
+const newsToggle = document.querySelector(".news-toggle");
 const NEWS_VISIBLE = 4;
+// Extra height that lets the next item peek out under the fade, hinting there is more.
+const NEWS_PEEK = 18;
 
 if (newsList) {
-  // Show the latest four items; older ones stay reachable by scrolling the list.
+  // Show the latest four items; older ones are reachable by scrolling or "Show all".
+  let isExpanded = false;
+
+  const updateFade = () => {
+    const hasMore = newsList.scrollTop + newsList.clientHeight < newsList.scrollHeight - 2;
+    newsList.classList.toggle("has-more", newsList.classList.contains("is-scrollable") && hasMore);
+  };
+
   const fitNews = () => {
     const items = newsList.children;
-    const isScrollable = items.length > NEWS_VISIBLE;
+    const hasOverflow = items.length > NEWS_VISIBLE;
+    const isScrollable = hasOverflow && !isExpanded;
     newsList.classList.toggle("is-scrollable", isScrollable);
     if (isScrollable) {
       const last = items[NEWS_VISIBLE - 1];
-      newsList.style.maxHeight = `${last.offsetTop + last.offsetHeight}px`;
+      newsList.style.maxHeight = `${last.offsetTop + last.offsetHeight + NEWS_PEEK}px`;
       newsList.tabIndex = 0;
     } else {
       newsList.style.removeProperty("max-height");
       newsList.removeAttribute("tabindex");
     }
+    if (newsToggle) {
+      newsToggle.hidden = !hasOverflow;
+      newsToggle.textContent = isExpanded ? "Show less ↑" : `Show all ${items.length} ↓`;
+      newsToggle.setAttribute("aria-expanded", String(isExpanded));
+    }
+    updateFade();
   };
 
+  newsToggle?.addEventListener("click", () => {
+    isExpanded = !isExpanded;
+    newsList.scrollTop = 0;
+    fitNews();
+  });
+
   fitNews();
+  newsList.addEventListener("scroll", updateFade, { passive: true });
   window.addEventListener("resize", fitNews);
   document.fonts?.ready.then(fitNews);
 }

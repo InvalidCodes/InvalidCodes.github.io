@@ -396,6 +396,45 @@ li {
   scrollbar-width: thin;
 }
 
+/* Fade the peeking item while older ones remain below (18px matches NEWS_PEEK in home.js). */
+.news-list.has-more {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 18px), transparent);
+}
+
+.news-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  min-height: 26px;
+  padding: 3px 10px;
+  border: 1px solid rgba(78, 42, 132, 0.2);
+  border-radius: 999px;
+  background: rgba(78, 42, 132, 0.055);
+  color: var(--accent-dark);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.news-toggle[hidden] {
+  display: none;
+}
+
+.news-toggle:hover {
+  background: rgba(78, 42, 132, 0.1);
+  border-color: rgba(78, 42, 132, 0.35);
+}
+
+.news-toggle:focus-visible {
+  outline: 3px solid rgba(78, 42, 132, 0.25);
+  outline-offset: 3px;
+}
+
 .news-list li {
   display: grid;
   grid-template-columns: 104px minmax(0, 1fr);
