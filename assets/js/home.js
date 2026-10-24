@@ -79,10 +79,10 @@ if (publicationList && publicationFilters) {
 }
 
 const newsList = document.querySelector(".news-list");
-const NEWS_VISIBLE = 5;
+const NEWS_VISIBLE = 4;
 
 if (newsList) {
-  // Show the latest five items; older ones stay reachable by scrolling the list.
+  // Show the latest four items; older ones stay reachable by scrolling the list.
   const fitNews = () => {
     const items = newsList.children;
     const isScrollable = items.length > NEWS_VISIBLE;

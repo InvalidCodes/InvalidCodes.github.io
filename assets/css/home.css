@@ -388,7 +388,7 @@ li {
   padding: 0;
 }
 
-/* home.js caps the height at the first five items once there are more. */
+/* home.js caps the height at the first four items once there are more. */
 .news-list.is-scrollable {
   overflow-y: auto;
   overscroll-behavior: contain;
