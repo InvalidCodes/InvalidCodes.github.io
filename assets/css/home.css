@@ -682,7 +682,7 @@ li {
 }
 
 .career-timeline {
-  --year-height: 180px;
+  --year-height: 100px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
 }
@@ -766,47 +766,41 @@ li {
 
 .career-card {
   z-index: 1;
+  position: relative;
   min-width: 0;
   margin: 2px;
-  padding: 10px 11px;
+  padding: 0;
   border-left: 3px solid;
-  border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .career-card-education {
+  --card-fill: #f5f0fa;
   border-color: #7652a6;
-  background: #f5f0fa;
 }
 
 .career-card-research {
   --card-fill: #eaf8f5;
   border-color: #40ab99;
-  background: var(--card-fill);
 }
 
 .career-card-industry {
   --card-fill: #fff7d6;
   border-color: #d9ad39;
-  background: var(--card-fill);
 }
 
-.career-card-compact {
-  position: relative;
-  padding: 0;
-  overflow: visible;
-  border-radius: 0;
-  background: transparent;
-}
-
-.career-card-compact .career-card-copy {
+.career-card-copy {
   position: absolute;
   top: 0;
   left: 8px;
   right: 0;
-  padding: 4px 8px;
+  padding: 6px 9px;
   border-radius: 4px;
   background: var(--card-fill);
+}
+
+.career-wegwiser .career-card-copy {
+  padding: 0 7px;
 }
 
 /* Row 1 is Dec 2027; row 84 is Jan 2021. End month starts a card,
@@ -861,6 +855,10 @@ li {
 .career-wegwiser p,
 .career-duo p {
   font-size: 0.73rem;
+}
+
+.career-wegwiser p {
+  line-height: 1.25;
 }
 
 .career-earlier {
