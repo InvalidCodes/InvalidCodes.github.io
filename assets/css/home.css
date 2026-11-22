@@ -757,7 +757,10 @@ li {
   );
 }
 
-.career-lane-education { grid-column: 2; }
+.career-lane-education {
+  grid-column: 2;
+  grid-template-rows: repeat(84, calc(var(--year-height) / 12));
+}
 .career-lane-research { grid-column: 3; }
 .career-lane-industry { grid-column: 4; }
 
@@ -786,18 +789,20 @@ li {
   background: #fff7d6;
 }
 
-/* The two degrees share 2025, then fill their other calendar years. */
+/* Descending month rows place graduation in June and enrollment in September. */
 .career-master {
-  grid-row: 1 / 4;
+  grid-row: 7 / 29;
   grid-column: 1 / -1;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 52% 100%, 52% 66.67%, 0 66.67%);
 }
 
 .career-bachelor {
-  grid-row: 3 / 8;
+  grid-row: 31 / 77;
   grid-column: 1 / -1;
-  padding-top: calc(var(--year-height) + 10px);
-  clip-path: polygon(0 0, 48% 0, 48% 20%, 100% 20%, 100% 100%, 0 100%);
+}
+
+.career-lane-education .career-card {
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 .career-mll { grid-row: 2 / 4; grid-column: 1; }
