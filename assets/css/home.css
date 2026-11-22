@@ -682,7 +682,7 @@ li {
 }
 
 .career-timeline {
-  --year-height: 132px;
+  --year-height: 180px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
 }
@@ -694,7 +694,7 @@ li {
 
 .career-board {
   display: grid;
-  min-width: 1040px;
+  min-width: 960px;
   grid-template-columns: 74px repeat(3, minmax(0, 1fr));
   gap: 0 12px;
 }
@@ -717,13 +717,13 @@ li {
 .career-years,
 .career-lane {
   display: grid;
-  grid-template-rows: repeat(7, var(--year-height));
   min-height: calc(7 * var(--year-height));
   border-bottom: 1px solid var(--line);
 }
 
 .career-years {
   grid-column: 1;
+  grid-template-rows: repeat(7, var(--year-height));
   position: sticky;
   left: 0;
   z-index: 2;
@@ -748,6 +748,7 @@ li {
 
 .career-lane {
   position: relative;
+  grid-template-rows: repeat(84, calc(var(--year-height) / 12));
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 8px;
   background: repeating-linear-gradient(
@@ -759,7 +760,6 @@ li {
 
 .career-lane-education {
   grid-column: 2;
-  grid-template-rows: repeat(84, calc(var(--year-height) / 12));
 }
 .career-lane-research { grid-column: 3; }
 .career-lane-industry { grid-column: 4; }
@@ -767,7 +767,7 @@ li {
 .career-card {
   z-index: 1;
   min-width: 0;
-  margin: 8px 2px;
+  margin: 2px;
   padding: 10px 11px;
   border-left: 3px solid;
   border-radius: 4px;
@@ -780,16 +780,37 @@ li {
 }
 
 .career-card-research {
+  --card-fill: #eaf8f5;
   border-color: #40ab99;
-  background: #eaf8f5;
+  background: var(--card-fill);
 }
 
 .career-card-industry {
+  --card-fill: #fff7d6;
   border-color: #d9ad39;
-  background: #fff7d6;
+  background: var(--card-fill);
 }
 
-/* Descending month rows place graduation in June and enrollment in September. */
+.career-card-compact {
+  position: relative;
+  padding: 0;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+
+.career-card-compact .career-card-copy {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--card-fill);
+}
+
+/* Row 1 is Dec 2027; row 84 is Jan 2021. End month starts a card,
+   and the grid line after its start month ends it. */
 .career-master {
   grid-row: 7 / 29;
   grid-column: 1 / -1;
@@ -800,27 +821,13 @@ li {
   grid-column: 1 / -1;
 }
 
-.career-lane-education .career-card {
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-
-.career-mll { grid-row: 2 / 4; grid-column: 1; }
-.career-arc { grid-row: 2 / 3; grid-column: 2; }
-.career-scale { grid-row: 3 / 4; grid-column: 2; }
-.career-baai { grid-row: 2 / 3; grid-column: 1 / -1; }
-.career-saic { grid-row: 4 / 6; grid-column: 1 / -1; }
-
-.career-wegwiser,
-.career-duo {
-  grid-row: 3 / 4;
-  grid-column: 1 / -1;
-  height: calc(var(--year-height) / 2 - 10px);
-  padding: 6px 10px;
-}
-
-.career-wegwiser { align-self: start; }
-.career-duo { align-self: end; }
+.career-mll { grid-row: 14 / 29; grid-column: 1; }
+.career-arc { grid-row: 16 / 20; grid-column: 2; }
+.career-scale { grid-row: 28 / 34; grid-column: 2; }
+.career-baai { grid-row: 14 / 16; grid-column: 1 / -1; }
+.career-wegwiser { grid-row: 25 / 27; grid-column: 1 / -1; }
+.career-duo { grid-row: 29 / 34; grid-column: 1 / -1; }
+.career-saic { grid-row: 44 / 51; grid-column: 1 / -1; }
 
 .career-card h3 {
   margin: 0 0 3px;

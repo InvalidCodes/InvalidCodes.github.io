@@ -49,6 +49,13 @@ const observer = new IntersectionObserver(
 
 sections.forEach((section) => observer.observe(section));
 
+// Keep ongoing timeline bars aligned with the current month within the year grid.
+const currentMonth = new Date();
+const currentMonthRow = (2027 - currentMonth.getFullYear()) * 12 + 12 - currentMonth.getMonth();
+document.querySelectorAll(".career-card[data-present]").forEach((card) => {
+  card.style.gridRowStart = String(Math.max(1, Math.min(84, currentMonthRow)));
+});
+
 const publicationList = document.querySelector("#publication-list");
 const publicationFilters = document.querySelector(".publication-filters");
 
