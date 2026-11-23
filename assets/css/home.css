@@ -818,7 +818,12 @@ li {
 .career-mll { grid-row: 14 / 29; grid-column: 1; }
 .career-arc { grid-row: 16 / 20; grid-column: 2; }
 .career-scale { grid-row: 28 / 34; grid-column: 2; }
-.career-robomaster { grid-row: 57 / 77; grid-column: 1 / -1; }
+.career-robomaster-vision { grid-row: 57 / 77; grid-column: 1 / -1; }
+.career-robomaster-mechanical {
+  grid-row: 67 / 77;
+  grid-column: 1 / -1;
+  margin-left: 16px;
+}
 .career-baai { grid-row: 14 / 16; grid-column: 1 / -1; }
 .career-wegwiser { grid-row: 25 / 27; grid-column: 1 / -1; }
 .career-duo { grid-row: 29 / 34; grid-column: 1 / -1; }
@@ -990,6 +995,16 @@ li {
 
 .organization-logo-tall {
   width: 42px;
+}
+
+.vex-service-card {
+  grid-template-columns: 74px minmax(0, 1fr);
+}
+
+.vex-logo {
+  width: 70px;
+  height: auto;
+  max-height: 28px;
 }
 
 .organization-heading {
@@ -1166,6 +1181,15 @@ li {
 
   .organization-logo-tall {
     width: 40px;
+  }
+
+  .vex-service-card {
+    grid-template-columns: 62px minmax(0, 1fr);
+  }
+
+  .vex-logo {
+    width: 60px;
+    max-height: 24px;
   }
 
   .news-list li {
