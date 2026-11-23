@@ -818,6 +818,7 @@ li {
 .career-mll { grid-row: 14 / 29; grid-column: 1; }
 .career-arc { grid-row: 16 / 20; grid-column: 2; }
 .career-scale { grid-row: 28 / 34; grid-column: 2; }
+.career-robomaster { grid-row: 57 / 77; grid-column: 1 / -1; }
 .career-baai { grid-row: 14 / 16; grid-column: 1 / -1; }
 .career-wegwiser { grid-row: 25 / 27; grid-column: 1 / -1; }
 .career-duo { grid-row: 29 / 34; grid-column: 1 / -1; }
@@ -859,33 +860,6 @@ li {
 
 .career-wegwiser p {
   line-height: 1.25;
-}
-
-.career-earlier {
-  margin-top: 3px;
-  padding-top: 13px;
-  border-top: 1px solid var(--line);
-}
-
-.career-earlier h3 {
-  margin-bottom: 7px;
-  font-size: 0.86rem;
-  font-weight: 700;
-}
-
-.career-earlier p {
-  display: grid;
-  grid-template-columns: 74px minmax(0, 1fr);
-  gap: 12px;
-  margin: 3px 0;
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.career-earlier p span {
-  color: var(--text);
-  font-weight: 650;
-  white-space: nowrap;
 }
 
 .timeline-item {
@@ -1151,11 +1125,6 @@ li {
 
   .section {
     padding: 22px 0;
-  }
-
-  .career-earlier p {
-    grid-template-columns: 1fr;
-    gap: 0;
   }
 
   .news-list li,
