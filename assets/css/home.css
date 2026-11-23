@@ -675,12 +675,6 @@ li {
   font-weight: 720;
 }
 
-.career-note {
-  margin: 0 0 12px;
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
 .career-timeline {
   --year-height: 100px;
   overflow-x: auto;
