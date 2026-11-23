@@ -381,6 +381,18 @@ li {
   border-top: 1px solid var(--line);
 }
 
+.news-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 22px;
+  margin-bottom: 7px;
+}
+
+.news-heading h3 {
+  margin: 0;
+}
+
 .news-list {
   position: relative;
   list-style: none;
@@ -406,7 +418,6 @@ li {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-top: 10px;
   min-height: 26px;
   padding: 3px 10px;
   border: 1px solid rgba(78, 42, 132, 0.2);
